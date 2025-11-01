@@ -1,0 +1,431 @@
+/* Slack Message Input Styles */
+
+.slack-message-input {
+  width: 100%;
+  padding: 0;
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+}
+
+.slack-message-input__inner {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.slack-message-input__container {
+  display: flex;
+  flex-direction: column;
+  margin: 8px 20px;
+  border: 1px solid #d1d1d1;
+  border-radius: 8px;
+  background: #fff;
+  transition: border-color 0.15s ease;
+}
+
+/* Focus state - thin grey border, no blue shadow */
+.slack-message-input__container--focused {
+  border-color: #999;
+}
+
+/* Formatting Toolbar */
+.slack-formatting-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 12px;
+  border-bottom: 1px solid #e8e8e8;
+  background: #f8f8f8;
+  border-radius: 8px 8px 0 0;
+  transition: background-color 0.15s ease;
+}
+
+/* When input is focused, make toolbar MORE grey and icons DARKER */
+.slack-formatting-toolbar--focused {
+  background: #ebebeb;
+}
+
+.slack-formatting-toolbar--focused .slack-composer__button {
+  color: #1d1c1d;
+}
+
+.slack-composer__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #7a7a7a;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.08s ease;
+  flex-shrink: 0;
+}
+
+.slack-composer__button:hover {
+  background: rgba(29, 28, 29, 0.08);
+  color: #1d1c1d;
+}
+
+.slack-composer__button:active {
+  background: rgba(29, 28, 29, 0.13);
+}
+
+.slack-composer__button--active {
+  background: rgba(29, 28, 29, 0.13);
+  color: #1d1c1d;
+}
+
+.slack-composer__separator {
+  width: 1px;
+  height: 20px;
+  background: #dddddd;
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* Text Input */
+.slack-text-input__container {
+  position: relative;
+  min-height: 40px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.slack-text-input {
+  width: 100%;
+  min-height: 40px;
+  max-height: 200px;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.46668;
+  color: #1d1c1d;
+  resize: none;
+  outline: none;
+  overflow-y: auto;
+}
+
+.slack-text-input::placeholder {
+  color: #616061;
+  opacity: 0.6;
+}
+
+.slack-text-input:focus::placeholder {
+  opacity: 0.4;
+}
+
+/* Action Toolbar */
+.slack-action-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-radius: 0 0 8px 8px;
+  background: #fff;
+}
+
+.slack-action-toolbar__prefix {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.slack-action-toolbar__buttons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  justify-content: flex-start;
+  margin-left: 4px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.slack-action-toolbar__suffix {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.slack-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #616061;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.08s ease;
+  flex-shrink: 0;
+}
+
+.slack-action-button:hover {
+  background: rgba(29, 28, 29, 0.08);
+  color: #1d1c1d;
+}
+
+.slack-action-button:active {
+  background: rgba(29, 28, 29, 0.13);
+}
+
+.slack-action-button--formatting {
+  position: relative;
+}
+
+/* Make Aa button uniform with others - no background when active */
+.slack-action-button--active {
+  background: transparent;
+  color: #616061;
+}
+
+.slack-action-toolbar__divider {
+  width: 1px;
+  height: 20px;
+  background: #dddddd;
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* Send Button Group */
+.slack-send-button-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.slack-send-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: #007a5a;
+  color: #fff;
+  border-radius: 4px 0 0 4px;
+  cursor: pointer;
+  transition: all 0.08s ease;
+  flex-shrink: 0;
+}
+
+.slack-send-button:hover:not(:disabled) {
+  background: #006644;
+}
+
+.slack-send-button:active:not(:disabled) {
+  background: #005533;
+}
+
+.slack-send-button--disabled {
+  background: #dddddd;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.slack-send-options-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: #007a5a;
+  color: #fff;
+  border-radius: 0 4px 4px 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.08s ease;
+  flex-shrink: 0;
+}
+
+.slack-send-options-button:hover:not(:disabled) {
+  background: #006644;
+}
+
+.slack-send-options-button:active:not(:disabled) {
+  background: #005533;
+}
+
+.slack-send-options-button.slack-send-button--disabled {
+  background: #dddddd;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Scrollbar Styling */
+.slack-text-input::-webkit-scrollbar {
+  width: 8px;
+}
+
+.slack-text-input::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.slack-text-input::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.slack-text-input::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .slack-message-input__container {
+    margin: 6px 12px;
+  }
+
+  .slack-formatting-toolbar {
+    padding: 4px 8px;
+    gap: 1px;
+    flex-wrap: wrap;
+  }
+
+  .slack-composer__button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .slack-composer__separator {
+    display: none;
+  }
+
+  .slack-action-toolbar {
+    padding: 4px 8px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .slack-action-toolbar__buttons {
+    flex-wrap: wrap;
+    gap: 1px;
+    margin-left: 0;
+  }
+
+  .slack-action-button {
+    width: 28px;
+    height: 28px;
+  }
+
+  .slack-action-toolbar__divider {
+    display: none;
+  }
+
+  .slack-text-input {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+}
+
+@media (max-width: 480px) {
+  .slack-message-input__container {
+    margin: 4px 8px;
+    border-radius: 6px;
+  }
+
+  .slack-formatting-toolbar {
+    padding: 2px 4px;
+  }
+
+  .slack-composer__button {
+    width: 28px;
+    height: 28px;
+  }
+
+  .slack-action-toolbar {
+    padding: 2px 4px;
+  }
+
+  .slack-action-toolbar__prefix,
+  .slack-action-toolbar__buttons {
+    gap: 0;
+  }
+
+  .slack-action-button {
+    width: 26px;
+    height: 26px;
+  }
+
+  .slack-send-button,
+  .slack-send-options-button {
+    height: 28px;
+  }
+
+  .slack-send-button {
+    width: 28px;
+  }
+
+  .slack-send-options-button {
+    width: 18px;
+  }
+}
+
+/* Focus states for accessibility */
+.slack-composer__button:focus-visible,
+.slack-action-button:focus-visible,
+.slack-send-button:focus-visible,
+.slack-send-options-button:focus-visible {
+  outline: 2px solid #1264a3;
+  outline-offset: 2px;
+}
+
+.slack-text-input:focus-visible {
+  outline: none;
+}
+
+/* Animation for formatting toolbar */
+.slack-formatting-toolbar {
+  animation: slideDown 0.15s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Disabled state for all buttons */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* SVG icon styles */
+.slack-composer__button svg,
+.slack-action-button svg {
+  flex-shrink: 0;
+}
+
+/* Ensure icons don't get too small on mobile */
+@media (max-width: 480px) {
+  .slack-composer__button svg,
+  .slack-action-button svg {
+    width: 16px;
+    height: 16px;
+  }
+}
