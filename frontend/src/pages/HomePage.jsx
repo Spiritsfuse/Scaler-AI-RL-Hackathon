@@ -9,7 +9,6 @@ import {
   Chat,
   Channel,
   MessageList,
-  MessageInput,
   Thread,
   Window,
 } from "stream-chat-react";
@@ -18,6 +17,7 @@ import "../styles/stream-chat-theme.css";
 import CreateChannelModal from "../components/CreateChannelModal";
 import CustomChannelHeader from "../components/CustomChannelHeader";
 import SlackLayout from "../components/SlackLayout";
+import SlackMessageInput from "../components/SlackMessageInput";
 
 const HomePage = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -60,7 +60,7 @@ const HomePage = () => {
           <Window>
             <CustomChannelHeader />
             <MessageList />
-            <MessageInput />
+            <SlackMessageInput />
           </Window>
           <Thread />
         </Channel>
