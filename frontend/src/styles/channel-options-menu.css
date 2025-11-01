@@ -1,0 +1,168 @@
+/* Channel Options Menu - Dropdown for 3-dots */
+.channel-options-menu {
+  position: fixed;
+  /* Position will be set via inline styles in the component */
+  z-index: 999999;
+  min-width: 280px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1),
+              0px 10px 15px -3px rgba(0, 0, 0, 0.1),
+              0px 0px 0px 1px rgba(0, 0, 0, 0.05);
+  animation: menuSlideIn 160ms cubic-bezier(0.36, 0.19, 0.29, 1);
+}
+
+@keyframes menuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(+8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.channel-options-menu__content {
+  padding: 8px 0;
+}
+
+/* Item wrapper for submenu positioning */
+.channel-options-menu__item-wrapper {
+  position: relative;
+}
+
+.channel-options-menu__item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 24px 8px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 80ms cubic-bezier(0.36, 0.19, 0.29, 1);
+  text-align: left;
+  gap: 12px;
+  min-height: 36px;
+}
+
+/* Item with check icon */
+.channel-options-menu__item--with-check {
+  padding-left: 12px;
+  gap: 8px;
+}
+
+/* Item that's a link (blue text) */
+.channel-options-menu__item--link .channel-options-menu__item-text {
+  color: #1264a3;
+  font-size: 13px;
+  line-height: 1.38461538;
+}
+
+.channel-options-menu__item:hover {
+  background-color: #1264a3;
+}
+
+.channel-options-menu__item:hover .channel-options-menu__item-text,
+.channel-options-menu__item:hover .channel-options-menu__item-badge,
+.channel-options-menu__item:hover .channel-options-menu__item-chevron {
+  color: #ffffff;
+}
+
+.channel-options-menu__item-text {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.46666667;
+  color: #1d1c1d;
+  font-family: "Slack-Lato", "appleLogo", sans-serif;
+}
+
+.channel-options-menu__item-badge {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.38461538;
+  color: #616061;
+  font-family: "Slack-Lato", "appleLogo", sans-serif;
+}
+
+.channel-options-menu__item-chevron {
+  width: 16px;
+  height: 16px;
+  color: #454545;
+  flex-shrink: 0;
+}
+
+.channel-options-menu__item-check {
+  width: 16px;
+  height: 16px;
+  color: #1264a3;
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+
+.channel-options-menu__divider {
+  height: 1px;
+  background-color: rgba(29, 28, 29, 0.13);
+  margin: 8px 0;
+}
+
+/* Submenu styles */
+.channel-options-submenu {
+  position: absolute;
+  left: 100%;
+  top: -8px;
+  min-width: 280px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1),
+              0px 10px 15px -3px rgba(0, 0, 0, 0.1),
+              0px 0px 0px 1px rgba(0, 0, 0, 0.05);
+  padding: 8px 0;
+  /* margin-left: 4px; */
+  z-index: 999999;
+  animation: submenuSlideIn 160ms cubic-bezier(0.36, 0.19, 0.29, 1);
+}
+
+.channel-options-submenu--wide {
+  min-width: 340px;
+}
+
+@keyframes submenuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Submenu sections */
+.channel-options-submenu__section {
+  padding: 4px 0;
+}
+
+.channel-options-submenu__label {
+  padding: 8px 16px 4px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.38461538;
+  color: #1d1c1d;
+  font-family: "Slack-Lato", "appleLogo", sans-serif;
+}
+
+/* Accessibility focus state */
+.channel-options-menu__item:focus-visible {
+  outline: 2px solid #1264a3;
+  outline-offset: -2px;
+  background-color: #1264a3;
+}
+
+.channel-options-menu__item:focus-visible .channel-options-menu__item-text,
+.channel-options-menu__item:focus-visible .channel-options-menu__item-badge,
+.channel-options-menu__item:focus-visible .channel-options-menu__item-chevron {
+  color: #ffffff;
+}

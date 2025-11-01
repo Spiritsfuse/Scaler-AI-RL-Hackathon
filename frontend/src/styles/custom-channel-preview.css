@@ -1,4 +1,118 @@
-/* Custom Channel Preview */
+/* Slack-like Channel Preview Styles */
+
+/* Container for channel item */
+.p-channel_sidebar__static_list__item {
+  position: relative;
+  padding: 0;
+  margin: 0 8px 1px 8px;
+  list-style: none;
+}
+
+/* Channel button base styles */
+.p-channel_sidebar__channel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 3px 8px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.46666667;
+  cursor: pointer;
+  transition: all 80ms cubic-bezier(0.36, 0.19, 0.29, 1);
+  text-align: left;
+  border-radius: 6px;
+  min-height: 28px;
+  font-family: "Slack-Lato", "appleLogo", sans-serif;
+}
+
+/* Hover state */
+.p-channel_sidebar__channel:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Selected/Active state - matches Slack's light lavender background */
+.p-channel_sidebar__channel--selected {
+  background-color: #E8DFE9;
+  color: #1d1c1d;
+  font-weight: 700;
+}
+
+.p-channel_sidebar__channel--selected:hover {
+  background-color: #DED0DF;
+  color: #1d1c1d;
+}
+
+/* Channel icon prefix (hashtag icon) */
+.p-channel_sidebar__channel_icon_prefix {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.p-channel_sidebar__channel_icon_prefix .channel-icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.5;
+}
+
+/* Selected channel has darker icon color */
+.p-channel_sidebar__channel--selected .p-channel_sidebar__channel_icon_prefix {
+  color: #1d1c1d;
+}
+
+/* Channel name */
+.p-channel_sidebar__name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 15px;
+  line-height: 1.46666667;
+}
+
+.p-channel_sidebar__name span {
+  display: inline-block;
+}
+
+/* Channel suffix (for badges, etc) */
+.p-channel_sidebar__channel_suffix {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* Unread badge */
+.channel-preview-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background-color: #e01e5a;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 9px;
+  line-height: 1;
+}
+
+/* Focus visible for accessibility */
+.p-channel_sidebar__static_list__item:focus-within .p-channel_sidebar__channel {
+  outline: 2px solid #1264a3;
+  outline-offset: 2px;
+}
+
+/* Legacy class names support (for backwards compatibility) */
 .channel-preview-button {
   display: flex;
   align-items: center;
@@ -38,19 +152,4 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.channel-preview-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  background-color: #e01e5a;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  border-radius: 10px;
-  flex-shrink: 0;
 }
