@@ -1,28 +1,44 @@
-Detailed Visual Description
-You are looking at a UI component, likely a part of a sidebar, with a dark purple (aubergine) background. It consists of two distinct horizontal rows stacked vertically.
 
-Top Row (Section Header):
 
-Layout: A flexible row container with items aligned to the center vertically.
+This header component is light-themed (`bg-white`) and is structured into two distinct horizontal rows.
 
-Icon: On the far left, there is a right-pointing triangle icon (like a "play" button), suggesting a collapsible accordion-style section. In lucid-react, this would be ChevronRight.
+### Row 1: Channel Title & Actions
 
-Text: Immediately to the right of the icon, the text "Channels" is displayed.
+This row is a single `flex` container with `items-center` and `justify-between`. It has horizontal padding (e.g., `px-6`) and vertical padding (e.g., `py-3`).
 
-Color: Both the icon and the text are a light, muted gray or lavender color, providing clear contrast against the dark purple background.
+* **Left Side (Channel Info):**
+    * This is a `flex items-center gap-2`.
+    * **Favorite Icon:** A `Star` icon from Lucide React. It is not filled, (e.g., `stroke-gray-700 fill-none`).
+    * **Channel Name:** The text **"# general"**. This is a `span` or `h1` with `font-bold` and `text-xl` (e.g., `text-slate-900`).
 
-Bottom Row (Selected Item):
+* **Right Side (Channel Actions):**
+    * This is a `flex items-center gap-4`.
+    * **Member Avatars:** A component showing a stack of overlapping user avatars (images) next to a number, "96".
+    * **Huddle Button:** A `button` component with a light border (e.g., `border border-gray-300 rounded-md`). It is a `flex items-center gap-2 px-3 py-1.5`.
+        * **Icon:** `Headphones` (Lucide).
+        * **Text:** "Huddle".
+        * **Icon:** `ChevronDown` (Lucide) for the dropdown.
+    * **Search Button:** An icon-only button containing a `Search` icon (Lucide).
+    * **More Button:** An icon-only button containing a `MoreVertical` icon (Lucide).
 
-Layout: This row represents a single, active, or selected item within the "Channels" list.
+---
 
-Container: The entire row is encapsulated in a container with a very light, pale lavender or pinkish background color. This container has noticeably rounded corners.
+### Row 2: View Navigation (Tabs)
 
-Icon: Inside the container on the left, there is a hash symbol (#). In lucid-react, this would be the Hash icon.
+This row sits directly below the first and is separated by a full-width, thin bottom border (e.g., `border-b border-gray-200`). This row itself uses `flex` and `items-center`.
 
-Text: To the right of the hash icon, the text "new-channel" is displayed in a sans-serif font.
+* **Active Tab ("Messages"):**
+    * This component is a `flex items-center gap-2` with bottom padding (e.g., `pb-2`) and horizontal padding.
+    * It is visually active, indicated by a **thick purple bottom border** (e.g., `border-b-2 border-purple-600`).
+    * **Icon:** `MessageSquare` (Lucide), `text-black`.
+    * **Text:** "Messages", `text-black font-semibold`.
 
-Color: Both the hash icon and the "new-channel" text are a dark color (dark purple or black), contrasting sharply with their light lavender/pink background.
+* **Inactive Tab ("Untitled"):**
+    * A `flex items-center gap-2` with the same padding, but styled as inactive.
+    * The text and icon are grayed out (e.g., `text-gray-500`).
+    * **Icon:** `File` or `FileText` (Lucide).
+    * **Text:** "Untitled".
 
-Spacing: There is padding all around the icon and text inside the light-colored, rounded container. There is also a small gap between the Hash icon and the text "new-channel".
+* **Add Tab Button:**
+    * An icon-only button containing a `Plus` icon (Lucide), also styled as inactive (e.g., `text-gray-500`).
 
-This component structure is ideal for a React component that maps over a list of channels, applying special styling (the light background) to the currently active channel.
