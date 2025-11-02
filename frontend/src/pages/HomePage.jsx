@@ -18,11 +18,13 @@ import CreateChannelModal from "../components/CreateChannelModal";
 import CustomChannelHeader from "../components/CustomChannelHeader";
 import SlackLayout from "../components/SlackLayout";
 import SlackMessageInput from "../components/SlackMessageInput";
+import CanvasView from "../components/CanvasView";
 
 const HomePage = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [activeChannel, setActiveChannel] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState("Messages"); // Track active tab
 
   const { chatClient, error, isLoading } = useStreamChat();
 
@@ -58,9 +60,15 @@ const HomePage = () => {
       >
         <Channel channel={activeChannel}>
           <Window>
-            <CustomChannelHeader />
-            <MessageList />
-            <SlackMessageInput />
+            <CustomChannelHeader activeTab={activeTab} setActiveTab={setActiveTab} />
+            {activeTab === "Messages" ? (
+              <>
+                <MessageList />
+                <SlackMessageInput />
+              </>
+            ) : (
+              <CanvasView />
+            )}
           </Window>
           <Thread />
         </Channel>

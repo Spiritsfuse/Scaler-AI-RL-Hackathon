@@ -17,7 +17,6 @@ import { useNavigate } from "react-router";
 import MembersModal from "./MembersModal";
 import PinnedMessagesModal from "./PinnedMessagesModal";
 import InviteModal from "./InviteModal";
-import CanvasModal from "./CanvasModal";
 
 /**
  * A helper component to display stacked member avatars
@@ -58,7 +57,7 @@ const MemberAvatars = ({ members, count, onClick }) => {
 /**
  * The new CustomChannelHeader component with a two-row layout
  */
-const CustomChannelHeader = () => {
+const CustomChannelHeader = ({ activeTab, setActiveTab }) => {
   const { channel } = useChannelStateContext();
   const { user } = useUser();
   const navigate = useNavigate();
@@ -66,7 +65,6 @@ const CustomChannelHeader = () => {
   // --- Existing State ---
   const [showInvite, setShowInvite] = useState(false);
   const [showMembers, setShowMembers] = useState(false);
-  const [showCanvas, setShowCanvas] = useState(false);
 
   // Kept old state for PinnedMessagesModal, though the button is removed
   // from this UI spec. Can be wired up to the 'MoreVertical' button later.
@@ -74,7 +72,6 @@ const CustomChannelHeader = () => {
   const [pinnedMessages, setPinnedMessages] = useState([]);
 
   // --- New State ---
-  const [activeTab, setActiveTab] = useState("Messages");
   const [isStarred, setIsStarred] = useState(false);
 
   // --- Existing Logic ---
@@ -269,7 +266,6 @@ const CustomChannelHeader = () => {
           onClick={() => {
             try {
               setActiveTab("Canvas");
-              setShowCanvas(true);
             } catch (error) {
               console.error("Failed to open canvas:", error);
             }
@@ -312,16 +308,6 @@ const CustomChannelHeader = () => {
       )}
 
       {showInvite && <InviteModal channel={channel} onClose={() => setShowInvite(false)} />}
-
-      {showCanvas && (
-        <CanvasModal
-          channel={channel}
-          onClose={() => {
-            setShowCanvas(false);
-            setActiveTab("Messages"); // Switch back to Messages tab after closing
-          }}
-        />
-      )}
     </div>
   );
 };
