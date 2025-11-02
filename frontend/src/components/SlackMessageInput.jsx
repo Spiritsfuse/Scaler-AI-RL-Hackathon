@@ -329,30 +329,79 @@ const SlackMessageInput = () => {
     }
   };
 
+  // Function to check and update active formatting states at cursor position
+  const updateActiveFormats = useCallback(() => {
+    try {
+      const editor = editorRef.current;
+      if (!editor || !document.activeElement || document.activeElement !== editor) {
+        return;
+      }
+
+      const newActiveFormats = new Set();
+
+      // Check standard formatting commands
+      if (document.queryCommandState('bold')) {
+        newActiveFormats.add('bold');
+      }
+      if (document.queryCommandState('italic')) {
+        newActiveFormats.add('italic');
+      }
+      if (document.queryCommandState('underline')) {
+        newActiveFormats.add('underline');
+      }
+      if (document.queryCommandState('strikeThrough')) {
+        newActiveFormats.add('strikethrough');
+      }
+
+      // Check for code, code-block, and other custom formats
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        let node = selection.anchorNode;
+
+        // Traverse up the DOM tree to check for formatting elements
+        while (node && node !== editor) {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            const tagName = node.tagName?.toLowerCase();
+
+            if (tagName === 'code') {
+              // Check if it's inline code or code block
+              const parent = node.parentElement;
+              if (parent?.tagName?.toLowerCase() === 'pre') {
+                newActiveFormats.add('code-block');
+              } else {
+                newActiveFormats.add('code');
+              }
+            } else if (tagName === 'pre') {
+              newActiveFormats.add('code-block');
+            } else if (tagName === 'blockquote') {
+              newActiveFormats.add('blockquote');
+            } else if (tagName === 'ul') {
+              newActiveFormats.add('bullet-list');
+            } else if (tagName === 'ol') {
+              newActiveFormats.add('ordered-list');
+            } else if (tagName === 'a') {
+              newActiveFormats.add('link');
+            }
+          }
+          node = node.parentNode;
+        }
+      }
+
+      setActiveFormats(newActiveFormats);
+    } catch (error) {
+      console.error('Error updating active formats:', error);
+    }
+  }, []);
+
   const toggleFormat = (format) => {
     try {
       // Apply the formatting
       applyFormatting(format);
 
-      // Toggle the active state for visual feedback
-      setActiveFormats(prev => {
-        const newFormats = new Set(prev);
-        if (newFormats.has(format)) {
-          newFormats.delete(format);
-        } else {
-          newFormats.add(format);
-        }
-        return newFormats;
-      });
-
-      // Remove active state after a short delay (visual feedback)
+      // Update active formats after a brief delay to allow DOM to update
       setTimeout(() => {
-        setActiveFormats(prev => {
-          const newFormats = new Set(prev);
-          newFormats.delete(format);
-          return newFormats;
-        });
-      }, 300);
+        updateActiveFormats();
+      }, 10);
     } catch (error) {
       console.error('Error toggling format:', error);
     }
@@ -387,6 +436,29 @@ const SlackMessageInput = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showPlusMenu]);
+
+  // Update active formats when selection changes
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    const handleSelectionChange = () => {
+      updateActiveFormats();
+    };
+
+    // Listen for selection changes
+    document.addEventListener('selectionchange', handleSelectionChange);
+
+    // Also listen for mouse and keyboard events on the editor
+    editor.addEventListener('mouseup', handleSelectionChange);
+    editor.addEventListener('keyup', handleSelectionChange);
+
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+      editor.removeEventListener('mouseup', handleSelectionChange);
+      editor.removeEventListener('keyup', handleSelectionChange);
+    };
+  }, [updateActiveFormats]);
 
   const handlePlusClick = () => {
     try {
