@@ -736,10 +736,9 @@
     --doc-theme-line-height: 22px;
     --quipUiFontFamily: var(--quip-host-app-font-family, inherit);
     box-sizing: inherit;
-    background: rgba(var(--sk_primary_background,255,255,255),1);
-    border-style: solid;
-    border-width: 1px;
-    position: relative;
-    transition: border-color .16s,box-shadow .16s;
-    border-color: rgba(var(--sk_foreground_low,29,28,29),.13);
-    border-radius: 8px;
+    z-index: 201;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    overflow: hidden;

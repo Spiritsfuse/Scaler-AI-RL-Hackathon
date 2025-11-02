@@ -1,61 +1,122 @@
-the component is a self-contained input box, likely positioned at the bottom of the chat window.
+Your goal is to replicate the layout of the main chat window for Direct Messages (DMs) based on the following visual description. This description covers the area *below* the main channel header and *above* the message input box.
 
-1. Overall Container
-Layout: A flex flex-col container.
+The DM interface has three main variations:
 
-Styling: It has a light border (e.g., border border-gray-300) and rounded corners (e.g., rounded-lg). It has a bg-white background.
+1. **1-on-1 DM:** A chat with one other person.
+2. **Self-DM:** A chat with yourself (often used for notes).
 
-2. Top Toolbar
-This is the first child of the main container.
+---
 
-Layout: A flex flex-row items-center gap-4 (or similar spacing).
+### 1. Top Information Panel (User/Group Details)
 
-Styling: It has padding (e.g., p-2) and a thin bottom border separating it from the text area (e.g., border-b border-gray-200).
+This is the section at the very top of the chat window that identifies who you are talking to.
 
-Icons (from Lucide React): The icons are grouped logically.
+**Case A: 1-on-1 DM**
 
-Group 1: Bold, Italic, Underline, Strikethrough
+- **Layout:** A large user avatar is on the left. To its right, text is stacked vertically.
+- **Avatar:** A large, circular user profile picture.
+- **Line 1: Name & Pronouns:** The user's full name in a large, bold font (e.g., "Ayush"). Next to it, in a smaller, regular font, are their pronouns (e.g., "He/Him").
+- **Line 2: Title/Status:** A single line of text in a regular font, showing their job title (e.g., "Software Engineer @ Scaler") or their current status (e.g., "📅 In a meeting").
 
-Group 2: Link
+**Case B: Self-DM (Chatting with yourself)**
 
-Group 3: ListOrdered, List
+- **Layout:** Identical to the 1-on-1 DM.
+- **Line 1: Name:** The user's full name, followed by the text " (you)" in the same large, bold font (e.g., "spiritsfuse (you)").
+- **Line 2: Title/Status:** Same as the 1-on-1 DM.
 
-Group 4: Code, Quote
+---
 
-3. Text Input Area
-This is the middle section.
+### 2. Action Button Bar
 
-Element: A textarea component.
+Below the Top Information Panel, there is a horizontal row of buttons.
 
-Styling: It is styled to be borderless (e.g., border-none focus:ring-0) and takes up the available vertical space (flex-1).
+- **Button 1: "Start a huddle"** - This is a primary button, shown with a solid background color.
+- **Button 2: "Call"** - This is a secondary button, shown with an outline and transparent background. It has a dropdown arrow next to the text.
+- **Button 3 (Contextual):**
+    - In 1-on-1 or Self DMs: **"View profile"** (secondary, outline button).
+    - In Group DMs: **"View members (X)"** where X is the number of members (e.g., "View members (3)") (secondary, outline button).
 
-Placeholder: The text "Message #random" is shown as a placeholder.
+---
 
-4. Bottom Actions Bar
-This is the final child of the main container, sitting below the text area.
+### 3. Informational Welcome Box
 
-Layout: A flex flex-row items-center justify-between.
+Below the Action Button Bar, there is a small, gray box with rounded corners that provides context.
 
-Styling: It has padding (e.g., p-2).
+- **Case A: 1-on-1 DM:** Contains the text "You're in a direct message with [User Name]." (e.g., "You're in a direct message with Ayush").
+    - **Special Variant (Guest User):** If the user is a guest, an additional line appears below: "[User Name] is a **guest** in this workspace." The word "guest" is bold.
+- **Case B: Self-DM:** Contains a helpful paragraph: "This is your space. Draft messages, list your to-dos, or keep links and files handy. You can also talk to yourself here, but please bear in mind you'll have to..."
 
-Left-Side Icons: A flex flex-row items-center gap-3.
+---
 
-PlusCircle (or Plus in a circle)
+### 4. Message List Layout
 
-CaseSensitive (for "Aa")
+This describes the structure of the actual chat messages.
 
-Smile
+- **Date Separators:** Messages are grouped by day. A horizontal line with the date (e.g., "November 2, 2025" or "Thursday, August 14th") separates message groups from different days.
+- **Message Grouping:** When a single user sends multiple messages in a row within a short time, they are visually grouped.
+- **Structure of the *First* Message in a Group:**
+    1. **Avatar:** The sender's small, circular avatar is displayed on the far left.
+    2. **Header Line:** On the same line, to the right of the avatar, is the sender's **Full Name (bold)** followed by the **Message Timestamp** (e.g., "10:00 AM") in a regular, grayed-out font.
+    3. **Content Line:** The message content (text, file, or image) appears on the next line, indented to align vertically with the Header Line (not with the avatar).
+- **Structure of *Subsequent* Messages in a Group:**
+    - No avatar is shown.
+    - No header line (name/timestamp) is shown.
+    - The message content simply appears on a new line, indented to match the content of the first message.
+- **File/Image Uploads:** When a file or image is sent, it appears inline as part of the message, typically showing a preview. It follows the same grouping logic.
 
-AtSign
+### 2. Explanation of Stream Chat Logic in This Codebase
 
-Video
+Here is how the real-time communication is wired up using **GetStream.io**:
 
-Mic
+The process involves two main parts: **Backend Authentication** (to securely get a user token) and **Frontend Connection** (to initialize the chat).
 
-Paperclip (or a similar "attach" icon, though the image is a bit ambiguous, Paperclip is a safe bet).
+### Backend Flow (Getting a Token)
 
-Right-Side Icons: A flex flex-row items-center gap-2.
+1. **Admin Client Init (`backend/src/config/stream.js`)**:
+    - A single, powerful **admin client** (`streamClient`) is created using `StreamChat.getInstance()` with the server-side `STREAM_API_KEY` and `STREAM_API_SECRET`.
+    - This file exports a key function: `generateStreamToken(userId)`. This function uses the admin client to mint a unique, short-lived token for a specific user.
+2. **API Endpoint (`backend/src/controllers/chat.controller.js`)**:
+    - An API endpoint (likely `/api/chat/token`) is exposed.
+    - When the frontend calls this endpoint, the `getStreamToken` controller function runs.
+    - It safely gets the logged-in user's ID from the auth middleware (`req.auth().userId`).
+    - It calls the `generateStreamToken` function from `stream.js` to create a token for that user.
+    - It returns this token as JSON: `{ token: "..." }`.
 
-Send Button: A Send icon. It appears to be the primary action button.
+### Frontend Flow (Connecting to Stream)
 
-Dropdown: A ChevronDown icon, likely for send options (e.g., schedule message).
+1. **The Hook (`frontend/src/hooks/useStreamChat.js`)**:
+    - This is the most important file on the frontend. It's a custom hook that manages the entire chat connection lifecycle.
+    - It uses `@tanstack/react-query` to automatically fetch the user token from the `/api/chat/token` endpoint as soon as the user is logged in (`enabled: !!user?.id`).
+    - Once the `tokenData` and the Clerk `user` object are available, a `useEffect` hook runs.
+    - Inside the `useEffect`, it initializes the **public client** (`StreamChat.getInstance(STREAM_API_KEY)`), using only the public API key.
+    - It then calls `client.connectUser()` and passes it:
+        - The user's details (ID, name, image) from the Clerk `user` object.
+        - The secure `tokenData.token` fetched from our backend.
+    - Finally, it stores the fully connected `client` in a React state (`chatClient`) and returns it.
+2. **The Provider (`frontend/src/pages/HomePage.jsx`)**:
+    - This page calls the `useStreamChat()` hook to get the `chatClient`.
+    - It wraps the entire chat UI in Stream's main provider component: `<Chat client={chatClient}>`.
+    - This provider makes the `chatClient` and all channel/message data available to every other Stream component (`<Channel>`, `<MessageList>`, `<SlackMessageInput>`, etc.) via React context.
+
+**Summary:** The backend's only job is to **create a user token**. The frontend's job is to **fetch that token** and use it to **connect the user** to Stream's servers.
+
+---
+
+### 3. Key Files for Implementing the DM Info Panel
+
+Your new task is to build the "middle part" of the message interface—the welcome area for DMs that shows the user's avatar, name, status, and action buttons (like "Start a huddle"). This new component will live *inside* the chat window, between the header and the start of the message history.
+
+Here are the key files you'll need to work with:
+
+- **`frontend/src/pages/HomePage.jsx`**:
+    - **Why:** This is the main layout file where you will **render your new component**.
+    - **Where:** You will need to add your new component inside the `<Window>` component, right above `<MessageList>`.
+    - **Logic:** You'll also need to add logic here to *only* show your new component if the `activeChannel` is a DM.
+- **`frontend/src/components/CustomChannelHeader.jsx`**:
+    - **Why:** This file is crucial because it **already contains the logic** needed to identify the channel type.
+    - **Action:** Look at how it calculates `isDM`, `otherUser`, and `allMembers` using the `useChannelStateContext`. Your new component will need this *exact same information* to know whose profile to display (a single user or a group).
+    - **Suggestion:** You should refactor this logic out of the header and into a new custom hook (e.g., `useChannelInfo`) that both `CustomChannelHeader` and your new component can share.
+- **`frontend/src/styles/stream-chat-theme.css` (and new CSS files)**:
+    - **Why:** You will need to add new styles for your component (avatars, name, buttons) and potentially override some default Stream styles (like padding) to make your new panel fit perfectly.
+- **`frontend/src/components/SlackMessageInput.jsx`**:
+    - **Why:** This is *not* for modification, but for reference. The `getPlaceholderText` function in this file also has logic to detect if the channel is a DM. This reinforces the need for a shared hook.
