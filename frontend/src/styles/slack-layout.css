@@ -33,6 +33,11 @@
   min-width: 0;
 }
 
+/* Full width channel (for directories, etc.) */
+.slack-layout__channel--full {
+  width: 100%;
+}
+
 /* Ensure Stream Chat components take full height */
 .slack-layout__channel .str-chat,
 .slack-layout__channel .str-chat__container,

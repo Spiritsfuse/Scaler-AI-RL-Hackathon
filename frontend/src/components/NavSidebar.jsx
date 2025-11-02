@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, Edit, Headphones, Settings, Star, Hash, Users, MoreVertical, Plus } from 'lucide-react';
+import { ChevronDown, ChevronRight, Edit, Headphones, Settings, Star, Hash, Users, MoreVertical, Plus, Send } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { ChannelList } from 'stream-chat-react';
 import CustomChannelPreview from './CustomChannelPreview';
@@ -10,7 +10,9 @@ const NavSidebar = ({
   chatClient,
   activeChannel,
   setActiveChannel,
-  onCreateChannel
+  onCreateChannel,
+  onOpenDirectories,
+  onOpenDraftsSent
 }) => {
   const [showChannels, setShowChannels] = useState(true);
   const [showDMs, setShowDMs] = useState(true);
@@ -108,7 +110,18 @@ const NavSidebar = ({
             <Headphones className="nav-item-icon" />
             <span>Huddles</span>
           </button>
-          <button className="nav-item">
+          <button 
+            className="nav-item"
+            onClick={() => onOpenDraftsSent && onOpenDraftsSent()}
+          >
+            <Send className="nav-item-icon" />
+            <span>Drafts & sent</span>
+            <span className="nav-item-badge">1</span>
+          </button>
+          <button 
+            className="nav-item"
+            onClick={() => onOpenDirectories && onOpenDirectories()}
+          >
             <Users className="nav-item-icon" />
             <span>Directories</span>
           </button>

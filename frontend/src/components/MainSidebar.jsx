@@ -1,4 +1,4 @@
-import { Home, MessageSquare, Bell, FileText, Bookmark, MoreHorizontal, Plus } from 'lucide-react';
+import { Home, MessageSquare, Bell, FileText, Bookmark, MoreHorizontal, Plus, Users } from 'lucide-react';
 import { useUser } from "@clerk/clerk-react";
 import { useChatContext } from 'stream-chat-react';
 import { useState, useEffect, useRef } from 'react';

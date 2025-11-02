@@ -4,6 +4,8 @@ import NavSidebar from './NavSidebar';
 import DMPanel from './DMPanel';
 import ActivityPanel from './ActivityPanel';
 import LaterPanel from './LaterPanel';
+import DirectoriesPanel from './DirectoriesPanel';
+import DraftsSentPanel from './DraftsSentPanel';
 import ResizablePanel from './ResizablePanel';
 import '../styles/slack-layout.css';
 
@@ -18,6 +20,14 @@ const SlackLayout = ({
   onOpenProfile,
   children
 }) => {
+  const handleOpenDirectories = () => {
+    onViewChange?.('directories');
+  };
+
+  const handleOpenDraftsSent = () => {
+    onViewChange?.('drafts-sent');
+  };
+
   return (
     <div className="slack-layout">
       {/* Far Left Sidebar */}
@@ -35,7 +45,21 @@ const SlackLayout = ({
 
         {/* Content Area (Nav Sidebar + Channel Content OR DM Panel + Chat OR Activity Panel OR Later Panel) */}
         <div className="slack-layout__content">
-          {activeView === 'later' ? (
+          {activeView === 'drafts-sent' ? (
+            <>
+              {/* Drafts & Sent Panel - full width */}
+              <div className="slack-layout__channel slack-layout__channel--full">
+                <DraftsSentPanel />
+              </div>
+            </>
+          ) : activeView === 'directories' ? (
+            <>
+              {/* Directories Panel - full width */}
+              <div className="slack-layout__channel slack-layout__channel--full">
+                <DirectoriesPanel />
+              </div>
+            </>
+          ) : activeView === 'later' ? (
             <>
               {/* Later Panel - saved messages and reminders with resize capability */}
               <ResizablePanel minWidth={300} maxWidth={600} defaultWidth={400}>
@@ -76,13 +100,17 @@ const SlackLayout = ({
             </>
           ) : (
             <>
-              {/* Nav Sidebar */}
-              <NavSidebar
-                chatClient={chatClient}
-                activeChannel={activeChannel}
-                setActiveChannel={setActiveChannel}
-                onCreateChannel={onCreateChannel}
-              />
+              {/* Nav Sidebar - with resize capability */}
+              <ResizablePanel minWidth={200} maxWidth={500} defaultWidth={260}>
+                <NavSidebar
+                  chatClient={chatClient}
+                  activeChannel={activeChannel}
+                  setActiveChannel={setActiveChannel}
+                  onCreateChannel={onCreateChannel}
+                  onOpenDirectories={handleOpenDirectories}
+                  onOpenDraftsSent={handleOpenDraftsSent}
+                />
+              </ResizablePanel>
 
               {/* Channel Content Area */}
               <div className="slack-layout__channel">
