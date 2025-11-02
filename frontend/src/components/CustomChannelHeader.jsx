@@ -57,7 +57,7 @@ const MemberAvatars = ({ members, count, onClick }) => {
 /**
  * The new CustomChannelHeader component with a two-row layout
  */
-const CustomChannelHeader = ({ activeTab, setActiveTab }) => {
+const CustomChannelHeader = ({ activeTab, setActiveTab, canvasTitle }) => {
   const { channel } = useChannelStateContext();
   const { user } = useUser();
   const navigate = useNavigate();
@@ -258,7 +258,7 @@ const CustomChannelHeader = ({ activeTab, setActiveTab }) => {
           </span>
         </button>
 
-        {/* Add Canvas Tab (Inactive - styled as per Slack UI) */}
+        {/* Canvas Tab - Shows dynamic title */}
         <button
           className={`flex items-center gap-2 pb-2 px-2 ml-4 text-gray-500 hover:bg-gray-50 transition-colors duration-75 ${
             activeTab === "Canvas" ? "border-b-2 border-purple-600" : ""
@@ -279,7 +279,7 @@ const CustomChannelHeader = ({ activeTab, setActiveTab }) => {
           <span className={`font-medium ${
             activeTab === "Canvas" ? "text-black font-semibold" : "text-gray-500"
           }`}>
-            Add canvas
+            {activeTab === "Canvas" ? (canvasTitle || "Untitled") : "Add canvas"}
           </span>
         </button>
 

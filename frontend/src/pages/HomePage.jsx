@@ -25,8 +25,17 @@ const HomePage = () => {
   const [activeChannel, setActiveChannel] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("Messages"); // Track active tab
+  const [canvasTitle, setCanvasTitle] = useState(""); // Track canvas title
 
   const { chatClient, error, isLoading } = useStreamChat();
+
+  // Reset canvas title when switching away from Canvas tab
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab);
+    if (newTab === "Messages") {
+      setCanvasTitle(""); // Clear canvas title when switching to Messages
+    }
+  };
 
   // set active channel from URL params
   useEffect(() => {
@@ -60,14 +69,18 @@ const HomePage = () => {
       >
         <Channel channel={activeChannel}>
           <Window>
-            <CustomChannelHeader activeTab={activeTab} setActiveTab={setActiveTab} />
+            <CustomChannelHeader
+              activeTab={activeTab}
+              setActiveTab={handleTabChange}
+              canvasTitle={canvasTitle}
+            />
             {activeTab === "Messages" ? (
               <>
                 <MessageList />
                 <SlackMessageInput />
               </>
             ) : (
-              <CanvasView />
+              <CanvasView setCanvasTitle={setCanvasTitle} />
             )}
           </Window>
           <Thread />
