@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { useSearchParams } from "react-router";
 import { useChatContext } from "stream-chat-react";
 import * as Sentry from "@sentry/react";
+import { Edit3 } from 'lucide-react';
 import '../styles/users-list.css';
 
 const UsersList = ({ activeChannel }) => {
@@ -20,7 +21,10 @@ const UsersList = ({ activeChannel }) => {
 
     const usersOnly = response.users.filter((user) => !user.id.startsWith("recording-"));
 
-    return usersOnly;
+    // Add current user at the end with a special flag
+    const currentUser = { ...client.user, isCurrentUser: true };
+    
+    return [...usersOnly, currentUser];
   }, [client]);
 
   const {
@@ -84,8 +88,9 @@ const UsersList = ({ activeChannel }) => {
         return (
           <button
             key={user.id}
-            onClick={() => startDirectMessage(user)}
+            onClick={() => !user.isCurrentUser && startDirectMessage(user)}
             className={`dm-item ${isActive ? 'dm-item--active' : ''}`}
+            disabled={user.isCurrentUser}
           >
             <div className="dm-item__content">
               <div className="dm-item__avatar">
@@ -107,10 +112,18 @@ const UsersList = ({ activeChannel }) => {
                 {user.name || user.id}
               </span>
 
-              {unreadCount > 0 && (
+              {user.isCurrentUser && (
+                <span className="dm-item__you-label">you</span>
+              )}
+
+              {unreadCount > 0 && !user.isCurrentUser && (
                 <span className="dm-item__badge">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
+              )}
+
+              {!user.isCurrentUser && (
+                <Edit3 className="dm-item__edit-icon" />
               )}
             </div>
           </button>

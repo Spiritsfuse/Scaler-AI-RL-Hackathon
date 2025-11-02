@@ -189,7 +189,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 2px 12px;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 150ms;
@@ -217,8 +217,8 @@
 }
 
 .dm-item__avatar {
-  width: 36px;
-  height: 36px;
+  width: 18px;
+  height: 18px;
   border-radius: 6px;
   background-color: #7c3aed;
   display: flex;
@@ -249,13 +249,12 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 8px;
   margin-bottom: 2px;
 }
 
 .dm-item__name {
-  font-weight: 600;
-  color: #ffffff;
+  font-weight: 300;
+  color: #9ca3af;
   font-size: 14px;
   white-space: nowrap;
   overflow: hidden;

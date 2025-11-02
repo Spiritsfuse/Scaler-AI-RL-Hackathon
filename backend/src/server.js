@@ -6,6 +6,7 @@ import {clerkMiddleware} from '@clerk/express';
 import { serve } from "inngest/express";
 import { inngest, functions } from "./config/inngest.js";
 import { chatRoutes } from "./routes/chat.route.js";
+import listRoutes from "./routes/list.route.js";
 import * as Sentry from "@sentry/node"; 
 const app = express();
 import cors from "cors";
@@ -19,6 +20,7 @@ app.use(clerkMiddleware()) //req.auth will be available in the req obj
 //Route Middleware Registeration 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/chat", chatRoutes);
+app.use("/api/lists", listRoutes);
 
 
 dotenv.config(); 
