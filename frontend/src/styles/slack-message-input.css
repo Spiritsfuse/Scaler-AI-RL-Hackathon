@@ -61,8 +61,10 @@
   color: #7a7a7a;
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.08s ease;
+  transition: background-color 0.1s ease, color 0.1s ease;
   flex-shrink: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .slack-composer__button:hover {

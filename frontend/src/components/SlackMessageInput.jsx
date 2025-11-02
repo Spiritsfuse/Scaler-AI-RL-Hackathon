@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { useUser } from '@clerk/clerk-react';
 import {
@@ -27,6 +27,19 @@ import {
 import { useChannelStateContext, useChannelActionContext } from 'stream-chat-react';
 import '../styles/slack-message-input.css';
 
+// Debounce utility function
+const debounce = (func, wait) => {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
+
 // Utility function to convert HTML to Markdown
 const htmlToMarkdown = (html) => {
   try {
@@ -37,35 +50,68 @@ const htmlToMarkdown = (html) => {
     // Recursive function to process nodes
     const processNode = (node) => {
       if (node.nodeType === Node.TEXT_NODE) {
-        return node.textContent;
+        return node.textContent || '';
       }
 
       if (node.nodeType === Node.ELEMENT_NODE) {
         const tagName = node.tagName.toLowerCase();
-        const children = Array.from(node.childNodes).map(processNode).join('');
+
+        // Get children content
+        let children = '';
+        for (let i = 0; i < node.childNodes.length; i++) {
+          children += processNode(node.childNodes[i]);
+        }
 
         switch (tagName) {
           case 'strong':
           case 'b':
-            return `**${children}**`;
+            // Trim spaces and only add markdown if there's actual content
+            const boldContent = children.trim();
+            if (!boldContent) return '';
+            // Preserve leading/trailing spaces outside the markdown
+            const boldLeading = children.match(/^\s*/)[0];
+            const boldTrailing = children.match(/\s*$/)[0];
+            return `${boldLeading}**${boldContent}**${boldTrailing}`;
           case 'em':
           case 'i':
-            return `*${children}*`;
+            const italicContent = children.trim();
+            if (!italicContent) return '';
+            const italicLeading = children.match(/^\s*/)[0];
+            const italicTrailing = children.match(/\s*$/)[0];
+            return `${italicLeading}*${italicContent}*${italicTrailing}`;
           case 'u':
-            return `__${children}__`;
+            const underlineContent = children.trim();
+            if (!underlineContent) return '';
+            const underlineLeading = children.match(/^\s*/)[0];
+            const underlineTrailing = children.match(/\s*$/)[0];
+            return `${underlineLeading}__${underlineContent}__${underlineTrailing}`;
           case 'del':
           case 's':
           case 'strike':
-            return `~~${children}~~`;
+            const strikeContent = children.trim();
+            if (!strikeContent) return '';
+            const strikeLeading = children.match(/^\s*/)[0];
+            const strikeTrailing = children.match(/\s*$/)[0];
+            return `${strikeLeading}~~${strikeContent}~~${strikeTrailing}`;
           case 'code':
-            return `\`${children}\``;
+            // Check if it's part of a pre block
+            if (node.parentElement?.tagName.toLowerCase() === 'pre') {
+              return children;
+            }
+            const codeContent = children.trim();
+            if (!codeContent) return '';
+            const codeLeading = children.match(/^\s*/)[0];
+            const codeTrailing = children.match(/\s*$/)[0];
+            return `${codeLeading}\`${codeContent}\`${codeTrailing}`;
           case 'pre':
             return `\n\`\`\`\n${children}\n\`\`\`\n`;
           case 'blockquote':
-            return children.split('\n').map(line => `> ${line}`).join('\n');
+            // Split by lines and add > prefix
+            const lines = children.split('\n').filter(line => line.trim());
+            return lines.map(line => `> ${line}`).join('\n') + '\n';
           case 'a':
             const href = node.getAttribute('href') || '';
-            return `[${children}](${href})`;
+            return children ? `[${children}](${href})` : '';
           case 'ul':
             return '\n' + children;
           case 'ol':
@@ -80,8 +126,10 @@ const htmlToMarkdown = (html) => {
           case 'br':
             return '\n';
           case 'div':
+            // Only add newline if there's content
+            return children ? children + '\n' : '';
           case 'p':
-            return children + '\n';
+            return children ? children + '\n' : '';
           default:
             return children;
         }
@@ -90,7 +138,15 @@ const htmlToMarkdown = (html) => {
       return '';
     };
 
-    const markdown = processNode(tempDiv).trim();
+    // Process and clean up the markdown
+    let markdown = processNode(tempDiv);
+
+    // Clean up extra newlines and whitespace
+    markdown = markdown
+      .replace(/\n{3,}/g, '\n\n')  // Replace 3+ newlines with 2
+      .replace(/\u200B/g, '')       // Remove zero-width spaces
+      .trim();                       // Trim leading/trailing whitespace
+
     return markdown;
   } catch (error) {
     console.error('Error converting HTML to Markdown:', error);
@@ -168,9 +224,24 @@ const SlackMessageInput = () => {
       const textContent = editorRef.current.textContent?.trim();
       if (!textContent) return;
 
+      // Get HTML and clean it
+      let html = editorRef.current.innerHTML;
+
+      // Remove browser-specific artifacts
+      html = html
+        .replace(/<div><br><\/div>/g, '\n')  // Replace empty divs
+        .replace(/<div>/g, '\n')              // Replace div starts with newline
+        .replace(/<\/div>/g, '')              // Remove div ends
+        .replace(/<br>/g, '\n')               // Replace br with newline
+        .replace(/&nbsp;/g, ' ')              // Replace nbsp with space
+        .trim();
+
       // Convert HTML to Markdown
-      const html = editorRef.current.innerHTML;
       const markdown = htmlToMarkdown(html);
+
+      console.log('Original HTML:', editorRef.current.innerHTML);
+      console.log('Cleaned HTML:', html);
+      console.log('Converted Markdown:', markdown);
 
       // Send message using the channel directly
       await channel.sendMessage({
@@ -196,6 +267,35 @@ const SlackMessageInput = () => {
     } catch (error) {
       console.error('Error in handleKeyDown:', error);
     }
+  };
+
+  // Helper function to check if cursor is inside a specific element type
+  const isInsideElement = (tagNames) => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return null;
+
+    let node = selection.anchorNode;
+    const editor = editorRef.current;
+
+    while (node && node !== editor) {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const tagName = node.tagName?.toLowerCase();
+        if (tagNames.includes(tagName)) {
+          return node;
+        }
+      }
+      node = node.parentNode;
+    }
+    return null;
+  };
+
+  // Helper function to unwrap/remove formatting element
+  const unwrapElement = (element) => {
+    const parent = element.parentNode;
+    while (element.firstChild) {
+      parent.insertBefore(element.firstChild, element);
+    }
+    parent.removeChild(element);
   };
 
   // Helper function to apply visual formatting using document.execCommand
@@ -229,77 +329,106 @@ const SlackMessageInput = () => {
           break;
 
         case 'code':
-          // Wrap selection in <code> tag
-          const selectedText = selection.toString();
-          if (selectedText) {
-            const range = selection.getRangeAt(0);
-            range.deleteContents();
-            const codeElement = document.createElement('code');
-            codeElement.textContent = selectedText;
-            codeElement.style.backgroundColor = '#f4f4f4';
-            codeElement.style.padding = '2px 4px';
-            codeElement.style.borderRadius = '3px';
-            codeElement.style.fontFamily = 'monospace';
-            range.insertNode(codeElement);
-            // Move cursor after the code element
-            range.setStartAfter(codeElement);
-            range.setEndAfter(codeElement);
-            selection.removeAllRanges();
-            selection.addRange(range);
+          // Check if already inside code element
+          const existingCode = isInsideElement(['code']);
+          if (existingCode && existingCode.parentElement?.tagName?.toLowerCase() !== 'pre') {
+            // Toggle off: Remove code formatting
+            unwrapElement(existingCode);
           } else {
-            // Insert empty code tag
-            const codeElement = document.createElement('code');
-            codeElement.textContent = '\u200B'; // Zero-width space
-            codeElement.style.backgroundColor = '#f4f4f4';
-            codeElement.style.padding = '2px 4px';
-            codeElement.style.borderRadius = '3px';
-            codeElement.style.fontFamily = 'monospace';
-            const range = selection.getRangeAt(0);
-            range.insertNode(codeElement);
-            range.setStart(codeElement.firstChild, 0);
-            range.setEnd(codeElement.firstChild, 1);
-            selection.removeAllRanges();
-            selection.addRange(range);
+            // Toggle on: Apply code formatting
+            const selectedText = selection.toString();
+            if (selectedText) {
+              const range = selection.getRangeAt(0);
+              range.deleteContents();
+              const codeElement = document.createElement('code');
+              codeElement.textContent = selectedText;
+              codeElement.style.backgroundColor = '#f4f4f4';
+              codeElement.style.padding = '2px 4px';
+              codeElement.style.borderRadius = '3px';
+              codeElement.style.fontFamily = 'monospace';
+              range.insertNode(codeElement);
+              // Move cursor after the code element
+              range.setStartAfter(codeElement);
+              range.setEndAfter(codeElement);
+              selection.removeAllRanges();
+              selection.addRange(range);
+            } else {
+              // Insert empty code tag
+              const codeElement = document.createElement('code');
+              codeElement.textContent = '\u200B'; // Zero-width space
+              codeElement.style.backgroundColor = '#f4f4f4';
+              codeElement.style.padding = '2px 4px';
+              codeElement.style.borderRadius = '3px';
+              codeElement.style.fontFamily = 'monospace';
+              const range = selection.getRangeAt(0);
+              range.insertNode(codeElement);
+              range.setStart(codeElement.firstChild, 0);
+              range.setEnd(codeElement.firstChild, 1);
+              selection.removeAllRanges();
+              selection.addRange(range);
+            }
           }
           break;
 
         case 'code-block':
-          // Insert a pre/code block
-          const preElement = document.createElement('pre');
-          const codeBlock = document.createElement('code');
-          codeBlock.style.display = 'block';
-          codeBlock.style.backgroundColor = '#f4f4f4';
-          codeBlock.style.padding = '10px';
-          codeBlock.style.borderRadius = '5px';
-          codeBlock.style.fontFamily = 'monospace';
-          codeBlock.style.whiteSpace = 'pre-wrap';
+          // Check if already inside code block
+          const existingPre = isInsideElement(['pre']);
+          if (existingPre) {
+            // Toggle off: Convert code block back to normal text
+            const textContent = existingPre.textContent;
+            const textNode = document.createTextNode(textContent);
+            existingPre.parentNode.replaceChild(textNode, existingPre);
+            // Move cursor to the end of the text
+            const range = document.createRange();
+            range.setStartAfter(textNode);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+          } else {
+            // Toggle on: Create code block
+            const preElement = document.createElement('pre');
+            const codeBlock = document.createElement('code');
+            codeBlock.style.display = 'block';
+            codeBlock.style.backgroundColor = '#f4f4f4';
+            codeBlock.style.padding = '10px';
+            codeBlock.style.borderRadius = '5px';
+            codeBlock.style.fontFamily = 'monospace';
+            codeBlock.style.whiteSpace = 'pre-wrap';
 
-          const selectedCodeText = selection.toString();
-          codeBlock.textContent = selectedCodeText || '\u200B';
-          preElement.appendChild(codeBlock);
+            const selectedCodeText = selection.toString();
+            codeBlock.textContent = selectedCodeText || '\u200B';
+            preElement.appendChild(codeBlock);
 
-          const codeRange = selection.getRangeAt(0);
-          codeRange.deleteContents();
-          codeRange.insertNode(preElement);
+            const codeRange = selection.getRangeAt(0);
+            codeRange.deleteContents();
+            codeRange.insertNode(preElement);
 
-          // Place cursor inside
-          codeRange.setStart(codeBlock.firstChild, selectedCodeText ? selectedCodeText.length : 0);
-          codeRange.collapse(true);
-          selection.removeAllRanges();
-          selection.addRange(codeRange);
+            // Place cursor inside
+            codeRange.setStart(codeBlock.firstChild, selectedCodeText ? selectedCodeText.length : 0);
+            codeRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(codeRange);
+          }
           break;
 
         case 'blockquote':
-          // Use formatBlock for blockquote
-          document.execCommand('formatBlock', false, '<blockquote>');
-          // Style the blockquote
-          const blockquotes = editor.querySelectorAll('blockquote');
-          blockquotes.forEach(bq => {
-            bq.style.borderLeft = '4px solid #ccc';
-            bq.style.paddingLeft = '10px';
-            bq.style.marginLeft = '0';
-            bq.style.color = '#666';
-          });
+          // Check if already inside blockquote
+          const existingBlockquote = isInsideElement(['blockquote']);
+          if (existingBlockquote) {
+            // Toggle off: Convert blockquote back to normal paragraph
+            document.execCommand('formatBlock', false, '<p>');
+          } else {
+            // Toggle on: Apply blockquote
+            document.execCommand('formatBlock', false, '<blockquote>');
+            // Style the blockquote
+            const blockquotes = editor.querySelectorAll('blockquote');
+            blockquotes.forEach(bq => {
+              bq.style.borderLeft = '4px solid #ccc';
+              bq.style.paddingLeft = '10px';
+              bq.style.marginLeft = '0';
+              bq.style.color = '#666';
+            });
+          }
           break;
 
         case 'ordered-list':
@@ -311,9 +440,17 @@ const SlackMessageInput = () => {
           break;
 
         case 'link':
-          const url = prompt('Enter the URL:');
-          if (url) {
-            document.execCommand('createLink', false, url);
+          // Check if already inside link
+          const existingLink = isInsideElement(['a']);
+          if (existingLink) {
+            // Toggle off: Remove link
+            document.execCommand('unlink', false, null);
+          } else {
+            // Toggle on: Create link
+            const url = prompt('Enter the URL:');
+            if (url) {
+              document.execCommand('createLink', false, url);
+            }
           }
           break;
 
@@ -398,10 +535,11 @@ const SlackMessageInput = () => {
       // Apply the formatting
       applyFormatting(format);
 
-      // Update active formats after a brief delay to allow DOM to update
-      setTimeout(() => {
+      // Update active formats immediately using requestAnimationFrame
+      // This ensures smooth UI update without blocking
+      requestAnimationFrame(() => {
         updateActiveFormats();
-      }, 10);
+      });
     } catch (error) {
       console.error('Error toggling format:', error);
     }
@@ -437,28 +575,30 @@ const SlackMessageInput = () => {
     };
   }, [showPlusMenu]);
 
+  // Create a debounced version of updateActiveFormats for event listeners
+  const debouncedUpdateActiveFormats = useMemo(
+    () => debounce(updateActiveFormats, 100),
+    [updateActiveFormats]
+  );
+
   // Update active formats when selection changes
   useEffect(() => {
     const editor = editorRef.current;
     if (!editor) return;
 
-    const handleSelectionChange = () => {
-      updateActiveFormats();
-    };
-
-    // Listen for selection changes
-    document.addEventListener('selectionchange', handleSelectionChange);
+    // Listen for selection changes with debounced function
+    document.addEventListener('selectionchange', debouncedUpdateActiveFormats);
 
     // Also listen for mouse and keyboard events on the editor
-    editor.addEventListener('mouseup', handleSelectionChange);
-    editor.addEventListener('keyup', handleSelectionChange);
+    editor.addEventListener('mouseup', debouncedUpdateActiveFormats);
+    editor.addEventListener('keyup', debouncedUpdateActiveFormats);
 
     return () => {
-      document.removeEventListener('selectionchange', handleSelectionChange);
-      editor.removeEventListener('mouseup', handleSelectionChange);
-      editor.removeEventListener('keyup', handleSelectionChange);
+      document.removeEventListener('selectionchange', debouncedUpdateActiveFormats);
+      editor.removeEventListener('mouseup', debouncedUpdateActiveFormats);
+      editor.removeEventListener('keyup', debouncedUpdateActiveFormats);
     };
-  }, [updateActiveFormats]);
+  }, [debouncedUpdateActiveFormats]);
 
   const handlePlusClick = () => {
     try {
@@ -556,10 +696,16 @@ const SlackMessageInput = () => {
 
   const FormatButton = ({ format, icon: Icon, label, dataQa }) => {
     try {
+      const handleClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleFormat(format);
+      };
+
       return (
         <button
           className={`slack-composer__button ${activeFormats.has(format) ? 'slack-composer__button--active' : ''}`}
-          onClick={() => toggleFormat(format)}
+          onMouseDown={handleClick}
           aria-label={label}
           aria-pressed={activeFormats.has(format)}
           data-qa={dataQa}
@@ -763,8 +909,12 @@ const SlackMessageInput = () => {
               <FormatButton format="code" icon={Code} label="Code" dataQa="code-composer-button" />
 
               <button
-                className="slack-composer__button"
-                onClick={() => toggleFormat('code-block')}
+                className={`slack-composer__button ${activeFormats.has('code-block') ? 'slack-composer__button--active' : ''}`}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleFormat('code-block');
+                }}
                 aria-label="Code block"
                 aria-pressed={activeFormats.has('code-block')}
                 data-qa="code-block-composer-button"
