@@ -1,28 +1,51 @@
-Detailed Visual Description
-You are looking at a UI component, likely a part of a sidebar, with a dark purple (aubergine) background. It consists of two distinct horizontal rows stacked vertically.
+🎨 Visual Description of the Activity Component
+The component is a modal or sidebar section titled "Activity" and is designed to display notifications.
 
-Top Row (Section Header):
+🖼️ Overall Structure and Layout
+The component occupies a portion of the screen (likely a sidebar or modal) and has a dark purple/eggplant background color. It has a clear header, a navigation area, and a list of activity items. The text is primarily white or a lighter shade for high contrast.
 
-Layout: A flexible row container with items aligned to the center vertically.
+📥 Header Area
+The header is fixed at the top and contains the following elements:
 
-Icon: On the far left, there is a right-pointing triangle icon (like a "play" button), suggesting a collapsible accordion-style section. In lucid-react, this would be ChevronRight.
+Title: The word "Activity" in a large, bold, white font on the left.
 
-Text: Immediately to the right of the icon, the text "Channels" is displayed.
+Toggle Switch: On the right, there is a toggle switch component.
 
-Color: Both the icon and the text are a light, muted gray or lavender color, providing clear contrast against the dark purple background.
+It is labeled "Unreads" in a smaller white font immediately to its left.
 
-Bottom Row (Selected Item):
+The switch itself is horizontal with a white or light-colored circular handle. When active (as shown), the switch's background is a contrasting color (like purple, or a bright accent color) to the handle.
 
-Layout: This row represents a single, active, or selected item within the "Channels" list.
+🧭 Navigation/Filter Bar
+Immediately below the header is a navigation bar for filtering the activity list:
 
-Container: The entire row is encapsulated in a container with a very light, pale lavender or pinkish background color. This container has noticeably rounded corners.
+"All" Tab: This tab is currently active. It is displayed in a white or light-colored font, potentially with an underline or a thicker bottom border in the same light color to indicate selection.
 
-Icon: Inside the container on the left, there is a hash symbol (#). In lucid-react, this would be the Hash icon.
+Other Tabs (Implied): There's an implied space for other filter tabs (e.g., "Mentions," "Threads") that would be displayed in a slightly less prominent color when inactive.
 
-Text: To the right of the hash icon, the text "new-channel" is displayed in a sans-serif font.
+📢 Activity/Notification List
+The list starts below the navigation bar and contains individual activity items.
 
-Color: Both the hash icon and the "new-channel" text are a dark color (dark purple or black), contrasting sharply with their light lavender/pink background.
+🔔 Activity Item Structure (The "Slackbot" Example)
+The visible item is from an App and has a standard notification structure:
 
-Spacing: There is padding all around the icon and text inside the light-colored, rounded container. There is also a small gap between the Hash icon and the text "new-channel".
+Icon Area (Left):
 
-This component structure is ideal for a React component that maps over a list of channels, applying special styling (the light background) to the currently active channel.
+Apps Label: A small text label, "Apps," appears above the icon in a less prominent, light grey font.
+
+App Icon: A circular or squarish area containing the application's logo (Slackbot in this case). The Slackbot icon is colorful, featuring a mix of orange, pink, cyan, and black on a white background. Use an image placeholder or the lucide-react Bot icon for a generic app icon.
+
+Content Area (Center):
+
+Sender/Source: "Slackbot" in a bold white font.
+
+Message: The notification text: "You're good to go! The channel #testing is now shared between your organization and New Workspace."
+
+The message uses a light white/off-white font.
+
+Key entities like the channel name (#testing) and the workspace name (New Workspace) are bolded for emphasis.
+
+Action/Overflow Area (Right):
+
+Bookmark/Save Icon: A bookmark icon (like Bookmark from lucide-react) in a white or light color. It appears to be an action to save or flag the notification.
+
+Kebab/More Options Menu: A vertical ellipsis (three dots) icon (like MoreVertical from lucide-react) next to the bookmark, indicating a menu for more actions related to the notification.

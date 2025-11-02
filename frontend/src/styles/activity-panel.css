@@ -1,0 +1,299 @@
+/* Activity Panel - Notification Center */
+.activity-panel {
+  width: 100%;
+  height: 100%;
+  background-color: #3f0e40;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+.activity-panel__header {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.activity-panel__title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.activity-panel__toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.toggle-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  width: 40px;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  cursor: pointer;
+  transition: background-color 200ms;
+  padding: 0;
+}
+
+.toggle-switch:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.toggle-switch.active {
+  background-color: #1264a3;
+}
+
+.toggle-switch.active:hover {
+  background-color: #0b5a94;
+}
+
+.toggle-switch__handle {
+  display: inline-block;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  transform: translateX(2px);
+  transition: transform 200ms;
+}
+
+.toggle-switch.active .toggle-switch__handle {
+  transform: translateX(20px);
+}
+
+/* Navigation Tabs */
+.activity-panel__nav {
+  display: flex;
+  gap: 24px;
+  padding: 0 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.activity-nav-tab {
+  padding: 12px 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 200ms;
+  position: relative;
+}
+
+.activity-nav-tab:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.activity-nav-tab.active {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+
+/* Activity List */
+.activity-panel__list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.activity-panel__list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.activity-panel__list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.activity-panel__list::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.activity-panel__list::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.activity-panel__empty {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 15px;
+  padding: 48px 24px;
+}
+
+/* Activity Item */
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 24px;
+  cursor: pointer;
+  transition: background-color 150ms;
+  border-left: 3px solid transparent;
+}
+
+.activity-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.activity-item.unread {
+  border-left-color: #1264a3;
+  background-color: rgba(18, 100, 163, 0.1);
+}
+
+.activity-item.unread:hover {
+  background-color: rgba(18, 100, 163, 0.15);
+}
+
+/* Icon Area */
+.activity-item__icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.activity-icon-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.activity-icon-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.activity-icon-image {
+  width: 24px;
+  height: 24px;
+  color: #611f69;
+}
+
+/* Content Area */
+.activity-item__content {
+  flex: 1;
+  min-width: 0;
+  padding-top: 4px;
+}
+
+.activity-item__sender {
+  font-weight: 700;
+  color: #fff;
+  font-size: 15px;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.activity-item__message {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.activity-highlight {
+  font-weight: 600;
+  color: #fff;
+}
+
+.activity-item__timestamp {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 4px;
+}
+
+/* Action Area */
+.activity-item__actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 150ms;
+  padding-top: 4px;
+}
+
+.activity-item:hover .activity-item__actions {
+  opacity: 1;
+}
+
+.activity-action-btn {
+  padding: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 150ms;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activity-action-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.activity-action-icon {
+  width: 18px;
+  height: 18px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.activity-action-btn.bookmarked .activity-action-icon {
+  color: #f59e0b;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .activity-panel__header {
+    padding: 16px;
+  }
+
+  .activity-panel__title {
+    font-size: 24px;
+  }
+
+  .activity-panel__nav {
+    padding: 0 16px;
+  }
+
+  .activity-item {
+    padding: 12px 16px;
+  }
+
+  .activity-item__actions {
+    opacity: 1;
+  }
+}

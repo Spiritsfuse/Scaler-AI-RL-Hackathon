@@ -22,6 +22,7 @@ import SlackMessageInput from "../components/SlackMessageInput";
 const HomePage = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [activeChannel, setActiveChannel] = useState(null);
+  const [activeView, setActiveView] = useState('home');
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { chatClient, error, isLoading } = useStreamChat();
@@ -45,16 +46,30 @@ const HomePage = () => {
   if (isLoading || !chatClient) return <PageLoader />;
 // if (true) return <PageLoader />;
 
+  const handleSetActiveChannel = (channel) => {
+    setActiveChannel(channel);
+    setSearchParams({ channel: channel.id });
+    // If we're setting a channel and not in home or dms view, switch to home
+    if (activeView !== 'home' && activeView !== 'dms') {
+      setActiveView('home');
+    }
+  };
+
+  const handleViewChange = (view) => {
+    setActiveView(view);
+    // If switching to home view and we have an active channel, maintain it
+    // If switching to dms and we have a DM channel, maintain it
+  };
+
   return (
     <Chat client={chatClient}>
       <SlackLayout
         chatClient={chatClient}
         activeChannel={activeChannel}
-        setActiveChannel={(channel) => {
-          setActiveChannel(channel);
-          setSearchParams({ channel: channel.id });
-        }}
+        setActiveChannel={handleSetActiveChannel}
         onCreateChannel={() => setIsCreateModalOpen(true)}
+        activeView={activeView}
+        onViewChange={handleViewChange}
       >
         <Channel channel={activeChannel}>
           <Window>

@@ -1,48 +1,117 @@
-<!--- Channel
-(user creates a channel named "new-channel" and it appears in the sidebar as selected)
--->
-<div aria-setsize="1" aria-level="2" aria-current="true" aria-posinset="1"
-  class="p-channel_sidebar__static_list__item p-channel_sidebar__static_list__item--contain p-channel_sidebar__static_list__item__row_container c-virtual_list__item"
-  tabindex="0" role="treeitem" id="C09Q1310FUM" data-qa="virtual-list-item" data-item-key="C09Q1310FUM"
-  style="top: 196px; height: 28px;">
+<div
+  class="p-home_header p-home_header--no_border p-ia__sidebar_header--ia_details_popover p-ia__sidebar_header--ia4_details_popover"
+>
   <div
-    class="p-channel_sidebar__channel p-channel_sidebar__channel--sidebar-section-header-update p-channel_sidebar__channel--selected"
-    data-user-count="0" data-section-channel-index="0" data-qa="channel-sidebar-channel"
-    data-qa-channel-sidebar-channel="true" data-qa-channel-sidebar-channel-is-selected="true"
-    data-qa-channel-sidebar-channel-is-muted="false" data-qa-channel-sidebar-channel-id="C09Q1310FUM"
-    data-qa-channel-sidebar-channel-section-id="L09QZB1LMCG" data-qa-channel-sidebar-channel-type="channel"
-    data-qa-channel-sidebar-is-starred="false" data-qa-channel-sidebar-is-you="false" draggable="true">
-    <div class="p-channel_sidebar__channel_icon_prefix"><svg data-r2k="true" data-qa="sidebar-channel-icon-prefix"
-        aria-hidden="true" data-sidebar-channel-icon="channel" viewBox="0 0 20 20" class="" style="--s: 16px;">
-        <path fill="currentColor" fill-rule="evenodd"
-          d="M9.74 3.878a.75.75 0 1 0-1.48-.255L7.68 7H3.75a.75.75 0 0 0 0 1.5h3.67L6.472 14H2.75a.75.75 0 0 0 0 1.5h3.463l-.452 2.623a.75.75 0 0 0 1.478.255l.496-2.878h3.228l-.452 2.623a.75.75 0 0 0 1.478.255l.496-2.878h3.765a.75.75 0 0 0 0-1.5h-3.506l.948-5.5h3.558a.75.75 0 0 0 0-1.5h-3.3l.54-3.122a.75.75 0 0 0-1.48-.255L12.43 7H9.2zM11.221 14l.948-5.5H8.942L7.994 14z"
-          clip-rule="evenodd"></path>
-      </svg></div><span dir="auto" class="p-channel_sidebar__name" data-qa="channel_sidebar_name_new-channel"
-      aria-label="" data-sk="tooltip_parent"><span>new-channel</span></span><span
-      class="p-channel_sidebar__channel_suffix" data-qa="sidebar-channel-suffix"></span>
+    role="toolbar"
+    aria-orientation="horizontal"
+    aria-label="Actions"
+    class="p-saved_for_later_page__header"
+  >
+    <div class="p-ia__view_header__title">Later</div>
+    <div class="p-saved_for_later_page__header_controls">
+      <button
+        class="c-button-unstyled c-icon_button c-icon_button--size_medium p-saved_for_later_page__header_controls_button c-icon_button--default"
+        data-qa="unstyled-button"
+        aria-label="New reminder"
+        data-sk="tooltip_parent"
+        type="button"
+        tabindex="0"
+      >
+        <svg
+          data-r2k="true"
+          data-qa="plus"
+          aria-hidden="true"
+          viewBox="0 0 20 20"
+          class=""
+          style="--s: 20px"
+        >
+          <path
+            fill="currentColor"
+            fill-rule="evenodd"
+            d="M10.75 3.25a.75.75 0 0 0-1.5 0v6H3.251L3.25 10v-.75a.75.75 0 0 0 0 1.5V10v.75h6v6a.75.75 0 0 0 1.5 0v-6h6a.75.75 0 0 0 0-1.5h-6z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      </button>
+    </div>
   </div>
 </div>
-<!--- New Channel
-(is created by user and can be many)
---> 
-<div aria-setsize="1" aria-level="2" aria-current="true" aria-posinset="1"
-  class="p-channel_sidebar__static_list__item p-channel_sidebar__static_list__item--contain p-channel_sidebar__static_list__item__row_container c-virtual_list__item"
-  tabindex="0" role="treeitem" id="C09Q1310FUM" data-qa="virtual-list-item" data-item-key="C09Q1310FUM"
-  style="top: 196px; height: 28px;">
-  <div
-    class="p-channel_sidebar__channel p-channel_sidebar__channel--sidebar-section-header-update p-channel_sidebar__channel--selected"
-    data-user-count="0" data-section-channel-index="0" data-qa="channel-sidebar-channel"
-    data-qa-channel-sidebar-channel="true" data-qa-channel-sidebar-channel-is-selected="true"
-    data-qa-channel-sidebar-channel-is-muted="false" data-qa-channel-sidebar-channel-id="C09Q1310FUM"
-    data-qa-channel-sidebar-channel-section-id="L09QZB1LMCG" data-qa-channel-sidebar-channel-type="channel"
-    data-qa-channel-sidebar-is-starred="false" data-qa-channel-sidebar-is-you="false" draggable="true">
-    <div class="p-channel_sidebar__channel_icon_prefix"><svg data-r2k="true" data-qa="sidebar-channel-icon-prefix"
-        aria-hidden="true" data-sidebar-channel-icon="channel" viewBox="0 0 20 20" class="" style="--s: 16px;">
-        <path fill="currentColor" fill-rule="evenodd"
-          d="M9.74 3.878a.75.75 0 1 0-1.48-.255L7.68 7H3.75a.75.75 0 0 0 0 1.5h3.67L6.472 14H2.75a.75.75 0 0 0 0 1.5h3.463l-.452 2.623a.75.75 0 0 0 1.478.255l.496-2.878h3.228l-.452 2.623a.75.75 0 0 0 1.478.255l.496-2.878h3.765a.75.75 0 0 0 0-1.5h-3.506l.948-5.5h3.558a.75.75 0 0 0 0-1.5h-3.3l.54-3.122a.75.75 0 0 0-1.48-.255L12.43 7H9.2zM11.221 14l.948-5.5H8.942L7.994 14z"
-          clip-rule="evenodd"></path>
-      </svg></div><span dir="auto" class="p-channel_sidebar__name" data-qa="channel_sidebar_name_new-channel"
-      aria-label="" data-sk="tooltip_parent"><span>new-channel</span></span><span
-      class="p-channel_sidebar__channel_suffix" data-qa="sidebar-channel-suffix"></span>
+
+<div
+  role="tablist"
+  class="c-tabs__tab_menu"
+  data-qa="tabs_full_width_class"
+  aria-orientation="horizontal"
+  aria-label="Filters"
+>
+  <button
+    class="c-button-unstyled c-tabs__tab js-tab"
+    data-qa="tabs_item"
+    id="saved"
+    aria-label="In progress"
+    aria-haspopup="false"
+    role="tab"
+    tabindex="-1"
+    aria-selected="false"
+    type="button"
+  >
+    <span class="c-tabs__tab_content">In progress</span></button
+  ><button
+    class="c-button-unstyled c-tabs__tab js-tab c-tabs__tab--active"
+    data-qa="tabs_item"
+    id="archived"
+    aria-haspopup="false"
+    role="tab"
+    tabindex="0"
+    aria-selected="true"
+    type="button"
+  >
+    <span class="c-tabs__tab_content">Archived</span></button
+  ><button
+    class="c-button-unstyled c-tabs__tab js-tab"
+    data-qa="tabs_item"
+    id="completed"
+    aria-haspopup="false"
+    role="tab"
+    tabindex="-1"
+    aria-selected="false"
+    type="button"
+  >
+    <span class="c-tabs__tab_content">Completed</span>
+  </button>
+</div>
+
+<div
+  role="none"
+  class="p-saved_for_later_page__empty_state c-empty_state c-empty_state--extended"
+  data-qa="empty_state_wrapper"
+>
+  <div class="c-empty_state__title">
+    <img
+      src="https://a.slack-edge.com/production-standard-emoji-assets/14.0/google-medium/1f4e6@2x.png"
+      aria-label="package emoji"
+      alt="package"
+      class="c-emoji c-emoji__medium p-saved_for_later_page__empty_emoji"
+      data-qa="emoji"
+      data-stringify-type="emoji"
+      data-stringify-emoji="package"
+    />
+    <p class="p-saved_for_later_page__empty_title">
+      Out of sight, but not out of mind
+    </p>
+  </div>
+  <div class="c-empty_state__description">
+    No more wasting time searching for messages. Archive messages you come back
+    to often.
+  </div>
+</div>
+
+<div class="p-empty_page">
+  <div class="p-empty_page__illustration">
+    <img
+      class="p-empty_page__illustration__img"
+      alt="Bookmark illustration"
+      src="https://a.slack-edge.com/bv1-13-br/empty-later-light-c52d2eb.svg"
+    />
   </div>
 </div>

@@ -1,6 +1,9 @@
 import MainSidebar from './MainSidebar';
 import TopHeader from './TopHeader';
 import NavSidebar from './NavSidebar';
+import DMPanel from './DMPanel';
+import ActivityPanel from './ActivityPanel';
+import ResizablePanel from './ResizablePanel';
 import '../styles/slack-layout.css';
 
 const SlackLayout = ({
@@ -8,32 +11,65 @@ const SlackLayout = ({
   activeChannel,
   setActiveChannel,
   onCreateChannel,
+  activeView,
+  onViewChange,
   children
 }) => {
   return (
     <div className="slack-layout">
       {/* Far Left Sidebar */}
-      <MainSidebar />
+      <MainSidebar activeView={activeView} onViewChange={onViewChange} />
 
       {/* Main Area (everything except far left sidebar) */}
       <div className="slack-layout__main">
         {/* Top Header */}
         <TopHeader />
 
-        {/* Content Area (Nav Sidebar + Channel Content) */}
+        {/* Content Area (Nav Sidebar + Channel Content OR DM Panel + Chat OR Activity Panel) */}
         <div className="slack-layout__content">
-          {/* Nav Sidebar */}
-          <NavSidebar
-            chatClient={chatClient}
-            activeChannel={activeChannel}
-            setActiveChannel={setActiveChannel}
-            onCreateChannel={onCreateChannel}
-          />
+          {activeView === 'activity' ? (
+            <>
+              {/* Activity Panel - notification center with resize capability */}
+              <ResizablePanel minWidth={300} maxWidth={600} defaultWidth={400}>
+                <ActivityPanel />
+              </ResizablePanel>
 
-          {/* Channel Content Area */}
-          <div className="slack-layout__channel">
-            {children}
-          </div>
+              {/* Content Area - can show onboarding or empty state */}
+              <div className="slack-layout__channel">
+                {children}
+              </div>
+            </>
+          ) : activeView === 'dms' ? (
+            <>
+              {/* DM Panel - sidebar for DMs with resize capability */}
+              <ResizablePanel minWidth={200} maxWidth={500} defaultWidth={260}>
+                <DMPanel
+                  activeChannel={activeChannel}
+                  setActiveChannel={setActiveChannel}
+                />
+              </ResizablePanel>
+
+              {/* Chat Content Area */}
+              <div className="slack-layout__channel">
+                {children}
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Nav Sidebar */}
+              <NavSidebar
+                chatClient={chatClient}
+                activeChannel={activeChannel}
+                setActiveChannel={setActiveChannel}
+                onCreateChannel={onCreateChannel}
+              />
+
+              {/* Channel Content Area */}
+              <div className="slack-layout__channel">
+                {children}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -1,17 +1,64 @@
 import { Home, MessageSquare, Bell, FileText, MoreHorizontal } from 'lucide-react';
 import { useUser } from "@clerk/clerk-react";
+import { useChatContext } from 'stream-chat-react';
+import { useState, useEffect } from 'react';
 import '../styles/main-sidebar.css';
 
-const MainSidebar = () => {
+const MainSidebar = ({ activeView = 'home', onViewChange }) => {
   const { user } = useUser();
+  const { client } = useChatContext();
+  const [unreadDMCount, setUnreadDMCount] = useState(0);
 
   const navItems = [
     { icon: Home, label: 'Home', id: 'home' },
-    { icon: MessageSquare, label: 'DMs', id: 'dms' },
+    { icon: MessageSquare, label: 'DMs', id: 'dms', badge: unreadDMCount },
     { icon: Bell, label: 'Activity', id: 'activity' },
     { icon: FileText, label: 'Files', id: 'files' },
     { icon: MoreHorizontal, label: 'More', id: 'more' },
   ];
+
+  // Fetch unread DM count
+  useEffect(() => {
+    if (!client?.user) return;
+
+    const fetchUnreadCount = async () => {
+      try {
+        const filter = {
+          type: 'messaging',
+          members: { $in: [client.user.id] },
+          member_count: 2,
+        };
+
+        const channels = await client.queryChannels(filter, [{ last_message_at: -1 }], {
+          watch: false,
+          state: true,
+        });
+
+        const totalUnread = channels.reduce((sum, channel) => {
+          return sum + (channel.countUnread() || 0);
+        }, 0);
+
+        setUnreadDMCount(totalUnread);
+      } catch (error) {
+        console.error('Error fetching unread DM count:', error);
+      }
+    };
+
+    fetchUnreadCount();
+
+    // Listen for new messages to update unread count
+    const handleEvent = (event) => {
+      if (event.type === 'message.new' || event.type === 'message.read') {
+        fetchUnreadCount();
+      }
+    };
+
+    client.on(handleEvent);
+
+    return () => {
+      client.off(handleEvent);
+    };
+  }, [client]);
 
   // Get user initials for avatar
   const getUserInitial = () => {
@@ -37,14 +84,21 @@ const MainSidebar = () => {
       <nav className="main-sidebar__nav">
         {navItems.map((item) => {
           const Icon = item.icon;
+          const isActive = activeView === item.id;
           return (
             <button
               key={item.id}
-              className="main-sidebar__nav-item"
+              className={`main-sidebar__nav-item ${isActive ? 'active' : ''}`}
               aria-label={item.label}
               title={item.label}
+              onClick={() => onViewChange?.(item.id)}
             >
-              <Icon className="nav-item-icon" />
+              <div className="nav-item-icon-wrapper">
+                <Icon className="nav-item-icon" />
+                {item.badge > 0 && (
+                  <span className="nav-item-badge">{item.badge > 9 ? '9+' : item.badge}</span>
+                )}
+              </div>
               <span className="nav-item-label">{item.label}</span>
             </button>
           );
