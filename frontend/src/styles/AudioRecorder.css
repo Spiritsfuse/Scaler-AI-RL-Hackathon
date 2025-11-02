@@ -1,0 +1,174 @@
+/* Audio Recorder Overlay */
+.audio-recorder-overlay {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2000;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Audio Recorder Popup */
+.audio-recorder-popup {
+  background-color: rgb(33, 36, 40);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 320px;
+  max-width: 400px;
+  position: relative;
+}
+
+/* Audio Preview Box */
+.audio-preview-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  background-color: rgb(26, 29, 33);
+  border-radius: 6px;
+}
+
+/* Audio Waveform */
+.audio-waveform {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  height: 32px;
+}
+
+.audio-waveform-bar {
+  width: 3px;
+  background-color: rgb(43, 165, 206);
+  border-radius: 2px;
+  transition: height 0.2s ease;
+}
+
+/* Audio Timer */
+.audio-timer {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgb(248, 248, 248);
+  white-space: nowrap;
+  min-width: 45px;
+  text-align: right;
+}
+
+/* Audio Control Bar */
+.audio-control-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+/* Audio Send Button */
+.audio-send-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background-color: rgb(29, 155, 209);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  color: rgb(248, 248, 248);
+}
+
+.audio-send-button:hover {
+  background-color: rgb(22, 126, 168);
+  transform: scale(1.05);
+}
+
+.audio-send-button .icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Audio Cancel Button */
+.audio-cancel-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: rgba(185, 186, 189, 0.2);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  color: rgb(185, 186, 189);
+  z-index: 10;
+}
+
+.audio-cancel-button:hover {
+  background-color: rgba(185, 186, 189, 0.3);
+  color: rgb(248, 248, 248);
+}
+
+.audio-cancel-button .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .audio-recorder-overlay {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+  }
+
+  .audio-recorder-popup {
+    min-width: auto;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .audio-preview-box {
+    padding: 6px 10px;
+  }
+
+  .audio-waveform {
+    height: 28px;
+  }
+
+  .audio-waveform-bar {
+    width: 2px;
+  }
+
+  .audio-timer {
+    font-size: 14px;
+    min-width: 40px;
+  }
+
+  .audio-send-button,
+  .audio-cancel-button {
+    width: 32px;
+    height: 32px;
+  }
+}

@@ -1,0 +1,579 @@
+/* Video Recorder Modal Styles */
+
+.video-recorder-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(16, 18, 20, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.video-recorder-modal {
+  background-color: rgb(26, 29, 33);
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px rgba(248, 248, 248, 0.13), 0 18px 48px 0 rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-width: 600px;
+  max-height: 640px;
+  position: relative;
+  overflow: hidden;
+  color: rgb(248, 248, 248);
+}
+
+/* Header */
+.video-recorder-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  padding-right: 60px;
+  border-bottom: 1px solid rgba(121, 124, 129, 0.3);
+}
+
+.video-recorder-title h1 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: rgb(248, 248, 248);
+}
+
+.video-recorder-header-icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Content Area */
+.video-recorder-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+}
+
+.video-recorder-canvas-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Avatar Placeholder */
+.video-recorder-avatar {
+  position: absolute;
+  width: 115px;
+  height: 115px;
+  background-color: rgb(65, 69, 73);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.avatar-icon {
+  width: 60px;
+  height: 60px;
+  color: rgb(154, 155, 158);
+}
+
+/* Canvas */
+.video-recorder-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Video Controls */
+.video-controls {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+
+.control-button-wrapper {
+  position: relative;
+}
+
+.control-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  padding: 0;
+}
+
+.control-button:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.control-button.active {
+  background-color: rgba(43, 165, 206, 0.3);
+}
+
+.control-button.active:hover {
+  background-color: rgba(43, 165, 206, 0.4);
+}
+
+.control-button .icon {
+  width: 20px;
+  height: 20px;
+  color: rgb(248, 248, 248);
+}
+
+/* Icon Button (Header) */
+.icon-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background-color: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: rgb(185, 186, 189);
+  padding: 0;
+}
+
+.icon-button:hover {
+  background-color: rgba(248, 248, 248, 0.08);
+}
+
+.icon-button .icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Dropdown Menus */
+.dropdown-menu {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  background-color: rgb(33, 36, 40);
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  min-width: 220px;
+  padding: 8px 0;
+  z-index: 10;
+}
+
+.effects-menu {
+  left: 0;
+}
+
+.settings-menu {
+  left: 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  color: rgb(248, 248, 248);
+  font-size: 15px;
+  position: relative;
+}
+
+.menu-item:hover {
+  background-color: rgba(43, 165, 206, 0.15);
+}
+
+.menu-item.selected {
+  color: rgb(43, 165, 206);
+}
+
+.menu-item.with-submenu {
+  justify-content: space-between;
+  padding-right: 12px;
+}
+
+.menu-item span {
+  flex: 1;
+}
+
+.check-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.chevron-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: rgb(154, 155, 158);
+}
+
+.menu-divider {
+  height: 1px;
+  background-color: rgba(121, 124, 129, 0.3);
+  margin: 8px 0;
+}
+
+/* Submenu */
+.submenu {
+  position: fixed;
+  background-color: rgb(33, 36, 40);
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  min-width: 280px;
+  padding: 8px 0;
+  z-index: 12;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.submenu .menu-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Positioning helpers for submenus */
+.menu-item.with-submenu {
+  position: relative;
+}
+
+/* Footer */
+.video-recorder-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(121, 124, 129, 0.3);
+}
+
+.footer-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  white-space: nowrap;
+}
+
+.footer-button .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.outline-button {
+  background-color: transparent;
+  color: rgb(248, 248, 248);
+  border: 1px solid rgba(121, 124, 129, 0.5);
+}
+
+.outline-button:hover {
+  background-color: rgba(248, 248, 248, 0.08);
+  border-color: rgba(121, 124, 129, 0.7);
+}
+
+.outline-button:first-child {
+  margin-right: auto;
+}
+
+.record-button {
+  background-color: rgb(121, 124, 129);
+  color: rgb(154, 155, 158);
+  cursor: not-allowed;
+}
+
+.record-button:not(:disabled) {
+  background-color: rgb(208, 80, 56);
+  color: rgb(248, 248, 248);
+  cursor: pointer;
+}
+
+.record-button:not(:disabled):hover {
+  background-color: rgb(181, 56, 30);
+}
+
+.record-button-active {
+  background-color: rgb(208, 80, 56);
+  color: rgb(248, 248, 248);
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.record-button-active:hover {
+  background-color: rgb(181, 56, 30);
+}
+
+.stop-button {
+  background-color: rgb(208, 80, 56);
+  color: rgb(248, 248, 248);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.stop-button:hover {
+  background-color: rgb(181, 56, 30);
+}
+
+.done-button {
+  background-color: rgb(29, 155, 209);
+  color: rgb(248, 248, 248);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.done-button:hover {
+  background-color: rgb(22, 126, 168);
+}
+
+/* Progress Bar */
+.progress-bar {
+  flex: 1;
+  margin-right: 12px;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 4px;
+  background-color: rgba(121, 124, 129, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: rgb(43, 165, 206);
+  transition: width 0.1s linear;
+}
+
+/* Recording Footer */
+.recording-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.recording-time {
+  font-size: 15px;
+  color: rgb(248, 248, 248);
+  white-space: nowrap;
+  margin-right: auto;
+  margin-left: 0;
+}
+
+.footer-separator {
+  width: 1px;
+  height: 24px;
+  background-color: rgba(121, 124, 129, 0.3);
+}
+
+/* Paused Footer */
+.paused-footer {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.paused-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-button-control {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background-color: transparent;
+  border: 1px solid rgba(121, 124, 129, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  color: rgb(248, 248, 248);
+}
+
+.icon-button-control:hover {
+  background-color: rgba(248, 248, 248, 0.08);
+  border-color: rgba(121, 124, 129, 0.7);
+}
+
+.icon-button-control .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.paused-time {
+  font-size: 15px;
+  color: rgb(248, 248, 248);
+  white-space: nowrap;
+}
+
+.paused-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+/* Cancel Button */
+.cancel-button {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background-color: transparent;
+  border: 1px solid rgba(121, 124, 129, 0.5);
+  color: rgb(248, 248, 248);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 3;
+}
+
+.cancel-button:hover {
+  background-color: rgba(248, 248, 248, 0.08);
+  border-color: rgba(121, 124, 129, 0.7);
+}
+
+.cancel-button .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Close Button */
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background-color: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: rgb(185, 186, 189);
+  padding: 0;
+  z-index: 3;
+}
+
+.close-button:hover {
+  background-color: rgba(248, 248, 248, 0.08);
+}
+
+.close-button .icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .video-recorder-modal {
+    max-width: 90%;
+    max-height: 90%;
+  }
+
+  .video-recorder-header {
+    padding: 16px 20px;
+  }
+
+  .video-recorder-content {
+    padding: 16px;
+  }
+
+  .video-recorder-footer {
+    padding: 16px 20px;
+    flex-wrap: wrap;
+  }
+
+  .footer-button {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-recorder-modal {
+    max-width: 95%;
+    max-height: 95%;
+  }
+
+  .video-recorder-title h1 {
+    font-size: 16px;
+  }
+
+  .dropdown-menu,
+  .submenu {
+    min-width: 200px;
+  }
+
+  .video-recorder-avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .avatar-icon {
+    width: 40px;
+    height: 40px;
+  }
+}
