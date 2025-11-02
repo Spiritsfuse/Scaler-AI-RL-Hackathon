@@ -168,6 +168,11 @@
   line-height: 1.46666667;
 }
 
+/* Standalone section headers (not inside wrapper) need margin */
+.nav-section > .section-header {
+  margin: 0 8px;
+}
+
 .section-header:hover {
   background-color: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.9);

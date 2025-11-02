@@ -21,6 +21,7 @@ import ProfileEdit from "../components/ProfileEdit";
 import CustomChannelHeader from "../components/CustomChannelHeader";
 import SlackLayout from "../components/SlackLayout";
 import SlackMessageInput from "../components/SlackMessageInput";
+import CanvasView from "../components/CanvasView";
 
 const HomePage = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -30,8 +31,18 @@ const HomePage = () => {
   const [activeChannel, setActiveChannel] = useState(null);
   const [activeView, setActiveView] = useState('home');
   const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState("Messages"); // Track active tab
+  const [canvasTitle, setCanvasTitle] = useState(""); // Track canvas title
 
   const { chatClient, error, isLoading } = useStreamChat();
+
+  // Reset canvas title when switching away from Canvas tab
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab);
+    if (newTab === "Messages") {
+      setCanvasTitle(""); // Clear canvas title when switching to Messages
+    }
+  };
 
   // set active channel from URL params
   useEffect(() => {
@@ -122,9 +133,19 @@ const HomePage = () => {
       >
         <Channel channel={activeChannel}>
           <Window>
-            <CustomChannelHeader />
-            <MessageList />
-            <SlackMessageInput />
+            <CustomChannelHeader
+              activeTab={activeTab}
+              setActiveTab={handleTabChange}
+              canvasTitle={canvasTitle}
+            />
+            {activeTab === "Messages" ? (
+              <>
+                <MessageList />
+                <SlackMessageInput />
+              </>
+            ) : (
+              <CanvasView setCanvasTitle={setCanvasTitle} />
+            )}
           </Window>
           <Thread />
         </Channel>
