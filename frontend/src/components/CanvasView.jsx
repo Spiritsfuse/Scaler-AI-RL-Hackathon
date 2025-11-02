@@ -14,13 +14,19 @@ import { useChannelStateContext } from "stream-chat-react";
  * Canvas View Component - Inline canvas editor for the message window
  * Replaces the message list when "Add canvas" tab is active
  */
-const CanvasView = () => {
+const CanvasView = ({ setCanvasTitle }) => {
   const { channel } = useChannelStateContext();
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
-  const [helperText, setHelperText] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [showToolbar, setShowToolbar] = useState(false);
+
+  // Update parent's canvas title whenever local title changes
+  const handleTitleChange = (e) => {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+    setCanvasTitle(newTitle);
+  };
 
   // Handle saving the canvas
   const handleSave = async () => {
@@ -34,16 +40,15 @@ const CanvasView = () => {
 
       // Send canvas as a message to the channel
       await channel.sendMessage({
-        text: `📄 **Canvas: ${title}**\n\n${subtitle}\n\n${helperText}`,
+        text: `📄 **Canvas: ${title}**\n\n${subtitle}`,
         canvas_title: title,
         canvas_subtitle: subtitle,
-        canvas_helper: helperText,
       });
 
       // Reset form after save
       setTitle("");
       setSubtitle("");
-      setHelperText("");
+      setCanvasTitle(""); // Also reset parent's canvas title
     } catch (error) {
       console.error("Error saving canvas:", error);
     } finally {
@@ -79,10 +84,10 @@ const CanvasView = () => {
           <input
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={handleTitleChange}
             onFocus={() => setShowToolbar(true)}
             onBlur={() => setTimeout(() => setShowToolbar(false), 200)}
-            className="w-full text-3xl font-bold text-gray-800 border-none outline-none bg-transparent mb-4 focus:ring-0 placeholder-gray-600"
+            className="w-full text-3xl font-bold text-black border-none outline-none bg-transparent focus:ring-0 placeholder-gray-600"
             placeholder="Your canvas title"
           />
 
@@ -93,22 +98,16 @@ const CanvasView = () => {
             onChange={(e) => setSubtitle(e.target.value)}
             onFocus={() => setShowToolbar(true)}
             onBlur={() => setTimeout(() => setShowToolbar(false), 200)}
-            className="w-full text-lg text-gray-500 border-none outline-none bg-transparent mt-4 focus:ring-0 placeholder-gray-600"
+            className="w-full text-lg text-black border-none outline-none bg-transparent mt-4 focus:ring-0 placeholder-gray-600"
             placeholder="What's on the docket for today?"
           />
 
-          {/* Editable Helper Text with Link */}
-          <div className="mt-2 text-base text-gray-500">
-            <input
-              type="text"
-              value={helperText}
-              onChange={(e) => setHelperText(e.target.value)}
-              onFocus={() => setShowToolbar(true)}
-              onBlur={() => setTimeout(() => setShowToolbar(false), 200)}
-              className="border-none outline-none bg-transparent focus:ring-0 inline placeholder-gray-600"
-              placeholder="Feeling stuck? Try a"
-            /><a href="#" className="underline text-gray-500 hover:text-gray-700">template...</a>
-          </div>
+          {/* Helper Text with Link - Only show when canvas is empty */}
+          {!title && !subtitle && (
+            <div className="mt-4 text-base text-gray-600">
+              Feeling stuck? Try a <a href="#" className="underline text-gray-600 hover:text-gray-700">template...</a>
+            </div>
+          )}
         </div>
       </div>
 
