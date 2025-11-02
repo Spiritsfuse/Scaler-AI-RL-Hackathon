@@ -1,28 +1,23 @@
-Detailed Visual Description
-You are looking at a UI component, likely a part of a sidebar, with a dark purple (aubergine) background. It consists of two distinct horizontal rows stacked vertically.
 
-Top Row (Section Header):
 
-Layout: A flexible row container with items aligned to the center vertically.
+### 1. Active Tab ("Messages")
 
-Icon: On the far left, there is a right-pointing triangle icon (like a "play" button), suggesting a collapsible accordion-style section. In lucid-react, this would be ChevronRight.
+* **Layout:** A `flex items-center gap-2` component.
+* **Icon:** `MessageSquare` (from Lucide React), `text-black`.
+* **Text:** "Messages", styled as `text-black font-semibold`.
+* **Active Indicator:** A thick, purple bottom border (e.g., `border-b-2 border-purple-600`). This border is positioned with padding (e.g., `pb-2`) to align perfectly under the tab.
 
-Text: Immediately to the right of the icon, the text "Channels" is displayed.
+### 2. Inactive Tab ("Add canvas")
 
-Color: Both the icon and the text are a light, muted gray or lavender color, providing clear contrast against the dark purple background.
+This is the new option you want to add.
 
-Bottom Row (Selected Item):
+* **Layout:** A `flex items-center gap-2` component.
+* **Icon:** `FileText` (or `File`) from Lucide React.
+* **Text:** "Add canvas".
+* **Style:** It is styled as inactive. The icon and text are grayed out (e.g., `text-gray-500`) and the font is not bold (`font-medium` or `font-normal`). It does **not** have the purple bottom border.
 
-Layout: This row represents a single, active, or selected item within the "Channels" list.
+### 3. Add Button
 
-Container: The entire row is encapsulated in a container with a very light, pale lavender or pinkish background color. This container has noticeably rounded corners.
-
-Icon: Inside the container on the left, there is a hash symbol (#). In lucid-react, this would be the Hash icon.
-
-Text: To the right of the hash icon, the text "new-channel" is displayed in a sans-serif font.
-
-Color: Both the hash icon and the "new-channel" text are a dark color (dark purple or black), contrasting sharply with their light lavender/pink background.
-
-Spacing: There is padding all around the icon and text inside the light-colored, rounded container. There is also a small gap between the Hash icon and the text "new-channel".
-
-This component structure is ideal for a React component that maps over a list of channels, applying special styling (the light background) to the currently active channel.
+* **Layout:** An icon-only button.
+* **Icon:** `Plus` (from Lucide React).
+* **Style:** It is also styled as inactive (e.g., `text-gray-500`).

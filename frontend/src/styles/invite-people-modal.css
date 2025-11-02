@@ -1,0 +1,248 @@
+/* Invite People Modal */
+.invite-people-modal {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 550px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.2s ease-out;
+}
+
+/* Header */
+.invite-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+/* Body */
+.invite-modal__body {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.invite-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.invite-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.invite-label svg {
+  color: #6b7280;
+}
+
+/* Email Input Form */
+.email-input-form {
+  display: flex;
+  gap: 8px;
+}
+
+.email-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #1f2937;
+  transition: all 0.15s;
+}
+
+.email-input:focus {
+  outline: none;
+  border-color: #1264a3;
+  box-shadow: 0 0 0 3px rgba(18, 100, 163, 0.1);
+}
+
+.add-email-btn {
+  padding: 10px 20px;
+  background-color: #1264a3;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  flex-shrink: 0;
+}
+
+.add-email-btn:hover:not(:disabled) {
+  background-color: #0b5a94;
+}
+
+.add-email-btn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Email Tags */
+.email-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.email-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.remove-email-btn {
+  padding: 2px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #1e40af;
+  display: flex;
+  align-items: center;
+  border-radius: 2px;
+  transition: background-color 0.15s;
+}
+
+.remove-email-btn:hover {
+  background-color: rgba(30, 64, 175, 0.2);
+}
+
+/* Divider */
+.invite-divider {
+  position: relative;
+  text-align: center;
+  margin: 8px 0;
+}
+
+.invite-divider::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background-color: #e5e7eb;
+}
+
+.divider-text {
+  position: relative;
+  display: inline-block;
+  padding: 0 16px;
+  background-color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+/* Invite Link */
+.invite-link-container {
+  display: flex;
+  gap: 8px;
+}
+
+.invite-link-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #6b7280;
+  background-color: #f9fafb;
+  font-family: ui-monospace, monospace;
+}
+
+.copy-link-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background-color: #fff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.copy-link-btn:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.copy-link-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.invite-hint {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Footer */
+.invite-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .invite-people-modal {
+    width: 95%;
+  }
+
+  .invite-modal__header,
+  .invite-modal__body,
+  .invite-modal__footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .email-input-form,
+  .invite-link-container {
+    flex-direction: column;
+  }
+
+  .add-email-btn,
+  .copy-link-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

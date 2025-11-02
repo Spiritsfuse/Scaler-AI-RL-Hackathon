@@ -1,0 +1,355 @@
+/* Later Panel - Saved Messages and Reminders */
+.later-panel {
+  width: 100%;
+  height: 100%;
+  background-color: #3f0e40;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+.later-panel__header {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.later-panel__title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.later-panel__add-btn {
+  padding: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 150ms;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.later-panel__add-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.later-add-icon {
+  width: 20px;
+  height: 20px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Navigation Tabs */
+.later-panel__nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+  padding: 0 24px;
+}
+
+.later-nav-tab {
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 150ms;
+  position: relative;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.later-nav-tab:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.later-nav-tab.active {
+  color: #fff;
+}
+
+.later-nav-tab__content {
+  display: block;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: border-color 150ms;
+}
+
+.later-nav-tab.active .later-nav-tab__content {
+  border-bottom-color: #fff;
+}
+
+/* Content Area */
+.later-panel__content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.later-panel__content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.later-panel__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.later-panel__content::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.later-panel__content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Empty State */
+.later-panel__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+  text-align: center;
+}
+
+.later-empty__icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.later-empty__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.later-empty__description {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+  max-width: 400px;
+  margin-bottom: 32px;
+}
+
+.later-empty__illustration {
+  margin-top: 24px;
+}
+
+.later-empty__illustration-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* Later List */
+.later-panel__list {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+
+/* Later Item */
+.later-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 24px;
+  cursor: pointer;
+  transition: background-color 150ms;
+  border-left: 3px solid transparent;
+}
+
+.later-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.later-item:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Icon Area */
+.later-item__icon {
+  display: flex;
+  align-items: flex-start;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.later-icon-wrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background-color: rgba(29, 155, 209, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.later-icon-wrapper--reminder {
+  background-color: rgba(255, 159, 67, 0.15);
+}
+
+.later-icon {
+  width: 20px;
+  height: 20px;
+  color: #1d9bd1;
+}
+
+.later-icon-wrapper--reminder .later-icon {
+  color: #ff9f43;
+}
+
+/* Content Area */
+.later-item__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.later-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.later-item__channel {
+  font-weight: 600;
+  color: #fff;
+  font-size: 15px;
+}
+
+.later-item__timestamp {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+}
+
+.later-item__sender {
+  font-weight: 700;
+  color: #fff;
+  font-size: 15px;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.later-item__message {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.later-item__reminder-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.later-item__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+}
+
+.later-meta-icon {
+  flex-shrink: 0;
+}
+
+.later-item__original-time,
+.later-item__due-date {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Action Area */
+.later-item__actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 150ms;
+  padding-top: 2px;
+}
+
+.later-item:hover .later-item__actions {
+  opacity: 1;
+}
+
+.later-action-btn {
+  padding: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 150ms;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.later-action-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.later-action-icon {
+  width: 18px;
+  height: 18px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.later-action-btn.archived .later-action-icon {
+  color: #10b981;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .later-panel__header {
+    padding: 16px;
+  }
+
+  .later-panel__title {
+    font-size: 24px;
+  }
+
+  .later-panel__nav {
+    padding: 0 16px;
+  }
+
+  .later-item {
+    padding: 12px 16px;
+  }
+
+  .later-item__actions {
+    opacity: 1;
+  }
+
+  .later-empty__description {
+    font-size: 14px;
+  }
+}
