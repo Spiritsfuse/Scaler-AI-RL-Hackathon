@@ -9,14 +9,19 @@ import {
   Plus,
   Hash,
   LockIcon,
+  Link as LinkIcon,
+  Folder,
+  Workflow,
+  ListIcon,
 } from "lucide-react";
 import { useChannelStateContext } from "stream-chat-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router";
 import MembersModal from "./MembersModal";
 import PinnedMessagesModal from "./PinnedMessagesModal";
 import InviteModal from "./InviteModal";
+import AddListModal from "./AddListModal";
 
 /**
  * A helper component to display stacked member avatars
@@ -73,6 +78,26 @@ const CustomChannelHeader = ({ activeTab, setActiveTab, canvasTitle }) => {
 
   // --- New State ---
   const [isStarred, setIsStarred] = useState(false);
+  const [showAddMenu, setShowAddMenu] = useState(false);
+  const [showAddListModal, setShowAddListModal] = useState(false);
+  const addMenuRef = useRef(null);
+
+  // Close add menu on click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (addMenuRef.current && !addMenuRef.current.contains(event.target)) {
+        setShowAddMenu(false);
+      }
+    };
+
+    if (showAddMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showAddMenu]);
 
   // --- Existing Logic ---
   // Added try/catch for robustness, though data access is usually safe.
@@ -236,10 +261,10 @@ const CustomChannelHeader = ({ activeTab, setActiveTab, canvasTitle }) => {
       </div>
 
       {/* Row 2: View Navigation (Tabs) */}
-      <div className="flex items-center border-b border-gray-200 px-6">
+      <div className="flex items-center mt-2 border-b border-gray-200 px-6">
         {/* Messages Tab (Active) */}
         <button
-          className={`flex items-center gap-2 pb-2 px-2 ${
+          className={`flex items-center text-sm gap-2 pb-2 px-2 ${
             activeTab === "Messages"
               ? "border-b-2 border-purple-600"
               : "text-gray-500"
@@ -260,7 +285,7 @@ const CustomChannelHeader = ({ activeTab, setActiveTab, canvasTitle }) => {
 
         {/* Canvas Tab - Shows dynamic title */}
         <button
-          className={`flex items-center gap-2 pb-2 px-2 ml-4 text-gray-500 hover:bg-gray-50 transition-colors duration-75 ${
+          className={`flex items-center text-sm gap-2 pb-2 px-2 ml-4 text-gray-500 hover:bg-gray-50 transition-colors duration-75 ${
             activeTab === "Canvas" ? "border-b-2 border-purple-600" : ""
           }`}
           onClick={() => {
@@ -284,12 +309,85 @@ const CustomChannelHeader = ({ activeTab, setActiveTab, canvasTitle }) => {
         </button>
 
         {/* Add Tab Button */}
-        <button
-          className="ml-2 pb-2 px-2 text-gray-500 hover:bg-gray-100 rounded transition-colors duration-75"
-          aria-label="Add new tab"
-        >
-          <Plus className="size-5" />
-        </button>
+        <div className="relative ml-2" ref={addMenuRef}>
+          <button
+            className="pb-2 px-2 text-gray-500 hover:bg-gray-100 rounded transition-colors duration-75"
+            aria-label="Add new tab"
+            onClick={() => setShowAddMenu(!showAddMenu)}
+          >
+            <Plus className="size-5" />
+          </button>
+          
+          {/* Add Menu Dropdown */}
+          {showAddMenu && (
+            <div className="absolute top-full left-0 mt-1 w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+              <button
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3"
+                onClick={() => {
+                  setShowAddMenu(false);
+                  alert('Canvas feature - already implemented via Add canvas tab');
+                }}
+              >
+                <FileText className="size-5 text-blue-600" />
+                <div>
+                  <div className="font-medium text-sm">Canvas</div>
+                </div>
+              </button>
+              
+              <button
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3"
+                onClick={() => {
+                  setShowAddMenu(false);
+                  setShowAddListModal(true);
+                }}
+              >
+                <ListIcon className="size-5 text-green-600" />
+                <div>
+                  <div className="font-medium text-sm">List</div>
+                </div>
+              </button>
+              
+              <button
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3"
+                onClick={() => {
+                  setShowAddMenu(false);
+                  alert('Workflow feature coming soon');
+                }}
+              >
+                <Workflow className="size-5 text-purple-600" />
+                <div>
+                  <div className="font-medium text-sm">Workflow</div>
+                </div>
+              </button>
+              
+              <button
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3"
+                onClick={() => {
+                  setShowAddMenu(false);
+                  alert('Folder feature coming soon');
+                }}
+              >
+                <Folder className="size-5 text-yellow-600" />
+                <div>
+                  <div className="font-medium text-sm">Folder</div>
+                </div>
+              </button>
+              
+              <button
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3"
+                onClick={() => {
+                  setShowAddMenu(false);
+                  alert('Link feature coming soon');
+                }}
+              >
+                <LinkIcon className="size-5 text-gray-600" />
+                <div>
+                  <div className="font-medium text-sm">Link</div>
+                </div>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Modals */}
@@ -308,6 +406,21 @@ const CustomChannelHeader = ({ activeTab, setActiveTab, canvasTitle }) => {
       )}
 
       {showInvite && <InviteModal channel={channel} onClose={() => setShowInvite(false)} />}
+
+      {/* Add List Modal */}
+      {showAddListModal && (
+        <AddListModal
+          isOpen={showAddListModal}
+          onClose={() => setShowAddListModal(false)}
+          channelId={channel.id}
+          channelName={channel.data?.id || 'channel'}
+          onListCreated={(list) => {
+            console.log('List created:', list);
+            // You can add functionality here to display the list in the channel
+            alert(`List "${list.name}" created successfully!`);
+          }}
+        />
+      )}
     </div>
   );
 };

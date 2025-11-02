@@ -145,6 +145,49 @@
   color: #1264a3;
 }
 
+/* "you" Label */
+.dm-item__you-label {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.46666667;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.dm-item:hover .dm-item__you-label {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Edit Icon */
+.dm-item__edit-icon {
+  width: 16px;
+  height: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity 80ms cubic-bezier(0.36, 0.19, 0.29, 1);
+}
+
+.dm-item:hover .dm-item__edit-icon {
+  opacity: 1;
+}
+
+.dm-item--active .dm-item__edit-icon {
+  color: #fff;
+}
+
+/* Disable pointer events on current user DM */
+.dm-item:disabled {
+  cursor: default;
+}
+
+.dm-item:disabled:hover {
+  background-color: transparent;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .dm-item {
