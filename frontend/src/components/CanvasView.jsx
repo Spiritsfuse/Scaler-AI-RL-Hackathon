@@ -16,9 +16,9 @@ import { useChannelStateContext } from "stream-chat-react";
  */
 const CanvasView = () => {
   const { channel } = useChannelStateContext();
-  const [title, setTitle] = useState("Your canvas title");
-  const [subtitle, setSubtitle] = useState("What's on the docket for today?");
-  const [helperText, setHelperText] = useState("Feeling stuck? Try a");
+  const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
+  const [helperText, setHelperText] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [showToolbar, setShowToolbar] = useState(false);
 
@@ -41,9 +41,9 @@ const CanvasView = () => {
       });
 
       // Reset form after save
-      setTitle("Your canvas title");
-      setSubtitle("What's on the docket for today?");
-      setHelperText("Feeling stuck? Try a");
+      setTitle("");
+      setSubtitle("");
+      setHelperText("");
     } catch (error) {
       console.error("Error saving canvas:", error);
     } finally {
@@ -66,8 +66,8 @@ const CanvasView = () => {
         {/* Add Cover Hover Area - Full width, no gap */}
         <div className="group h-20 border border-dashed border-gray-200 hover:bg-gray-50 transition-all cursor-pointer relative">
           <button
-            className="absolute bottom-0 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-gray-300 rounded-md px-3 py-1.5 text-sm shadow-sm hover:shadow-md"
-            style={{ left: '15%' }}
+            className="absolute bottom-0 transform translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-gray-300 rounded-md px-3 py-1.5 text-sm shadow-sm hover:shadow-md"
+            style={{ left: '10%' }}
           >
             Add cover
           </button>
@@ -82,7 +82,7 @@ const CanvasView = () => {
             onChange={(e) => setTitle(e.target.value)}
             onFocus={() => setShowToolbar(true)}
             onBlur={() => setTimeout(() => setShowToolbar(false), 200)}
-            className="w-full text-3xl font-bold text-gray-800 border-none outline-none bg-transparent mb-4 focus:ring-0"
+            className="w-full text-3xl font-bold text-gray-800 border-none outline-none bg-transparent mb-4 focus:ring-0 placeholder-gray-600"
             placeholder="Your canvas title"
           />
 
@@ -93,7 +93,7 @@ const CanvasView = () => {
             onChange={(e) => setSubtitle(e.target.value)}
             onFocus={() => setShowToolbar(true)}
             onBlur={() => setTimeout(() => setShowToolbar(false), 200)}
-            className="w-full text-lg text-gray-500 border-none outline-none bg-transparent mt-4 focus:ring-0"
+            className="w-full text-lg text-gray-500 border-none outline-none bg-transparent mt-4 focus:ring-0 placeholder-gray-600"
             placeholder="What's on the docket for today?"
           />
 
@@ -105,13 +105,9 @@ const CanvasView = () => {
               onChange={(e) => setHelperText(e.target.value)}
               onFocus={() => setShowToolbar(true)}
               onBlur={() => setTimeout(() => setShowToolbar(false), 200)}
-              className="border-none outline-none bg-transparent focus:ring-0 inline"
+              className="border-none outline-none bg-transparent focus:ring-0 inline placeholder-gray-600"
               placeholder="Feeling stuck? Try a"
-            />
-            {" "}
-            <a href="#" className="underline text-gray-500 hover:text-gray-700">
-              template...
-            </a>
+            /><a href="#" className="underline text-gray-500 hover:text-gray-700">template...</a>
           </div>
         </div>
       </div>
