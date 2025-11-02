@@ -111,13 +111,88 @@
   overflow-y: auto;
 }
 
-.slack-text-input::placeholder {
+/* Placeholder styling for contentEditable div */
+.slack-text-input:empty:before {
+  content: attr(data-placeholder);
   color: #616061;
   opacity: 0.6;
+  pointer-events: none;
+  position: absolute;
 }
 
-.slack-text-input:focus::placeholder {
+.slack-text-input:empty:focus:before {
   opacity: 0.4;
+}
+
+/* Ensure contentEditable div behaves like textarea */
+.slack-text-input[contenteditable] {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+/* Style for formatted text inside editor */
+.slack-text-input strong,
+.slack-text-input b {
+  font-weight: bold;
+}
+
+.slack-text-input em,
+.slack-text-input i {
+  font-style: italic;
+}
+
+.slack-text-input u {
+  text-decoration: underline;
+}
+
+.slack-text-input del,
+.slack-text-input s,
+.slack-text-input strike {
+  text-decoration: line-through;
+}
+
+.slack-text-input code {
+  background-color: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.slack-text-input pre {
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 8px 0;
+  overflow-x: auto;
+}
+
+.slack-text-input pre code {
+  background: none;
+  padding: 0;
+}
+
+.slack-text-input blockquote {
+  border-left: 4px solid #ccc;
+  padding-left: 10px;
+  margin-left: 0;
+  color: #666;
+}
+
+.slack-text-input ul,
+.slack-text-input ol {
+  padding-left: 20px;
+  margin: 4px 0;
+}
+
+.slack-text-input li {
+  margin: 2px 0;
+}
+
+.slack-text-input a {
+  color: #1264a3;
+  text-decoration: underline;
 }
 
 /* Action Toolbar */

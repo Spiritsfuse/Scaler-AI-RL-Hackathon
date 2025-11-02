@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import { useUser } from '@clerk/clerk-react';
 import {
@@ -27,6 +27,77 @@ import {
 import { useChannelStateContext, useChannelActionContext } from 'stream-chat-react';
 import '../styles/slack-message-input.css';
 
+// Utility function to convert HTML to Markdown
+const htmlToMarkdown = (html) => {
+  try {
+    // Create a temporary div to parse HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+
+    // Recursive function to process nodes
+    const processNode = (node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent;
+      }
+
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const tagName = node.tagName.toLowerCase();
+        const children = Array.from(node.childNodes).map(processNode).join('');
+
+        switch (tagName) {
+          case 'strong':
+          case 'b':
+            return `**${children}**`;
+          case 'em':
+          case 'i':
+            return `*${children}*`;
+          case 'u':
+            return `__${children}__`;
+          case 'del':
+          case 's':
+          case 'strike':
+            return `~~${children}~~`;
+          case 'code':
+            return `\`${children}\``;
+          case 'pre':
+            return `\n\`\`\`\n${children}\n\`\`\`\n`;
+          case 'blockquote':
+            return children.split('\n').map(line => `> ${line}`).join('\n');
+          case 'a':
+            const href = node.getAttribute('href') || '';
+            return `[${children}](${href})`;
+          case 'ul':
+            return '\n' + children;
+          case 'ol':
+            return '\n' + children;
+          case 'li':
+            const parent = node.parentElement;
+            if (parent?.tagName.toLowerCase() === 'ol') {
+              const index = Array.from(parent.children).indexOf(node) + 1;
+              return `${index}. ${children}\n`;
+            }
+            return `- ${children}\n`;
+          case 'br':
+            return '\n';
+          case 'div':
+          case 'p':
+            return children + '\n';
+          default:
+            return children;
+        }
+      }
+
+      return '';
+    };
+
+    const markdown = processNode(tempDiv).trim();
+    return markdown;
+  } catch (error) {
+    console.error('Error converting HTML to Markdown:', error);
+    return html;
+  }
+};
+
 const SlackMessageInput = () => {
   const [messageText, setMessageText] = useState('');
   const [isFormattingVisible, setIsFormattingVisible] = useState(true);
@@ -35,7 +106,7 @@ const SlackMessageInput = () => {
   const [showPlusMenu, setShowPlusMenu] = useState(false);
   const [showPollModal, setShowPollModal] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const textareaRef = useRef(null);
+  const editorRef = useRef(null);
   const fileInputRef = useRef(null);
   const plusButtonRef = useRef(null);
   const navigate = useNavigate();
@@ -72,29 +143,43 @@ const SlackMessageInput = () => {
     }
   };
 
-  // Auto-resize textarea
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+  // Update messageText state when editor content changes
+  const handleInput = useCallback(() => {
+    try {
+      if (editorRef.current) {
+        const html = editorRef.current.innerHTML;
+        // For empty div, clear the state
+        if (html === '<br>' || html === '<div><br></div>' || !editorRef.current.textContent?.trim()) {
+          setMessageText('');
+        } else {
+          setMessageText(html);
+        }
+      }
+    } catch (error) {
+      console.error('Error handling input:', error);
     }
-  }, [messageText]);
+  }, []);
 
 
   const handleSendMessage = async () => {
     try {
-      if (messageText.trim() && channel) {
-        // Send message using the channel directly
-        await channel.sendMessage({
-          text: messageText,
-        });
+      if (!editorRef.current || !channel) return;
 
-        // Clear input after successful send
-        setMessageText('');
-        if (textareaRef.current) {
-          textareaRef.current.style.height = 'auto';
-        }
-      }
+      const textContent = editorRef.current.textContent?.trim();
+      if (!textContent) return;
+
+      // Convert HTML to Markdown
+      const html = editorRef.current.innerHTML;
+      const markdown = htmlToMarkdown(html);
+
+      // Send message using the channel directly
+      await channel.sendMessage({
+        text: markdown,
+      });
+
+      // Clear input after successful send
+      setMessageText('');
+      editorRef.current.innerHTML = '';
     } catch (error) {
       console.error('Error sending message:', error);
       // You could add a toast notification here for better UX
@@ -113,8 +198,143 @@ const SlackMessageInput = () => {
     }
   };
 
+  // Helper function to apply visual formatting using document.execCommand
+  const applyFormatting = (formatType) => {
+    try {
+      const editor = editorRef.current;
+      if (!editor) return;
+
+      // Focus the editor first
+      editor.focus();
+
+      // Save current selection
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) return;
+
+      switch (formatType) {
+        case 'bold':
+          document.execCommand('bold', false, null);
+          break;
+
+        case 'italic':
+          document.execCommand('italic', false, null);
+          break;
+
+        case 'underline':
+          document.execCommand('underline', false, null);
+          break;
+
+        case 'strikethrough':
+          document.execCommand('strikeThrough', false, null);
+          break;
+
+        case 'code':
+          // Wrap selection in <code> tag
+          const selectedText = selection.toString();
+          if (selectedText) {
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+            const codeElement = document.createElement('code');
+            codeElement.textContent = selectedText;
+            codeElement.style.backgroundColor = '#f4f4f4';
+            codeElement.style.padding = '2px 4px';
+            codeElement.style.borderRadius = '3px';
+            codeElement.style.fontFamily = 'monospace';
+            range.insertNode(codeElement);
+            // Move cursor after the code element
+            range.setStartAfter(codeElement);
+            range.setEndAfter(codeElement);
+            selection.removeAllRanges();
+            selection.addRange(range);
+          } else {
+            // Insert empty code tag
+            const codeElement = document.createElement('code');
+            codeElement.textContent = '\u200B'; // Zero-width space
+            codeElement.style.backgroundColor = '#f4f4f4';
+            codeElement.style.padding = '2px 4px';
+            codeElement.style.borderRadius = '3px';
+            codeElement.style.fontFamily = 'monospace';
+            const range = selection.getRangeAt(0);
+            range.insertNode(codeElement);
+            range.setStart(codeElement.firstChild, 0);
+            range.setEnd(codeElement.firstChild, 1);
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+          break;
+
+        case 'code-block':
+          // Insert a pre/code block
+          const preElement = document.createElement('pre');
+          const codeBlock = document.createElement('code');
+          codeBlock.style.display = 'block';
+          codeBlock.style.backgroundColor = '#f4f4f4';
+          codeBlock.style.padding = '10px';
+          codeBlock.style.borderRadius = '5px';
+          codeBlock.style.fontFamily = 'monospace';
+          codeBlock.style.whiteSpace = 'pre-wrap';
+
+          const selectedCodeText = selection.toString();
+          codeBlock.textContent = selectedCodeText || '\u200B';
+          preElement.appendChild(codeBlock);
+
+          const codeRange = selection.getRangeAt(0);
+          codeRange.deleteContents();
+          codeRange.insertNode(preElement);
+
+          // Place cursor inside
+          codeRange.setStart(codeBlock.firstChild, selectedCodeText ? selectedCodeText.length : 0);
+          codeRange.collapse(true);
+          selection.removeAllRanges();
+          selection.addRange(codeRange);
+          break;
+
+        case 'blockquote':
+          // Use formatBlock for blockquote
+          document.execCommand('formatBlock', false, '<blockquote>');
+          // Style the blockquote
+          const blockquotes = editor.querySelectorAll('blockquote');
+          blockquotes.forEach(bq => {
+            bq.style.borderLeft = '4px solid #ccc';
+            bq.style.paddingLeft = '10px';
+            bq.style.marginLeft = '0';
+            bq.style.color = '#666';
+          });
+          break;
+
+        case 'ordered-list':
+          document.execCommand('insertOrderedList', false, null);
+          break;
+
+        case 'bullet-list':
+          document.execCommand('insertUnorderedList', false, null);
+          break;
+
+        case 'link':
+          const url = prompt('Enter the URL:');
+          if (url) {
+            document.execCommand('createLink', false, url);
+          }
+          break;
+
+        default:
+          return;
+      }
+
+      // Update the message text state
+      handleInput();
+
+    } catch (error) {
+      console.error('Error applying formatting:', error);
+    }
+  };
+
   const toggleFormat = (format) => {
     try {
+      // Apply the formatting
+      applyFormatting(format);
+
+      // Toggle the active state for visual feedback
       setActiveFormats(prev => {
         const newFormats = new Set(prev);
         if (newFormats.has(format)) {
@@ -124,6 +344,15 @@ const SlackMessageInput = () => {
         }
         return newFormats;
       });
+
+      // Remove active state after a short delay (visual feedback)
+      setTimeout(() => {
+        setActiveFormats(prev => {
+          const newFormats = new Set(prev);
+          newFormats.delete(format);
+          return newFormats;
+        });
+      }, 300);
     } catch (error) {
       console.error('Error toggling format:', error);
     }
@@ -225,7 +454,7 @@ const SlackMessageInput = () => {
       if (!channel || !user) return;
 
       // Create poll data structure with Stream's custom message data
-      const pollId = `poll_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const pollId = `poll_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
 
       const pollMessage = {
         text: `📊 ${pollData.question}`,
@@ -474,19 +703,26 @@ const SlackMessageInput = () => {
             </div>
           )}
 
-          {/* Text Input Area */}
+          {/* Text Input Area - ContentEditable for WYSIWYG */}
           <div className="slack-text-input__container">
-            <textarea
-              ref={textareaRef}
+            <div
+              ref={editorRef}
               className="slack-text-input"
-              value={messageText}
-              onChange={(e) => setMessageText(e.target.value)}
+              contentEditable="true"
+              onInput={handleInput}
               onKeyDown={handleKeyDown}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
-              placeholder={getPlaceholderText()}
+              data-placeholder={getPlaceholderText()}
               aria-label={getPlaceholderText()}
-              rows={1}
+              role="textbox"
+              aria-multiline="true"
+              suppressContentEditableWarning={true}
+              style={{
+                minHeight: '24px',
+                maxHeight: '200px',
+                overflowY: 'auto',
+              }}
             />
           </div>
 
