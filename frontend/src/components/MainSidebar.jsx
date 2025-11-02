@@ -1,4 +1,4 @@
-import { Home, MessageSquare, Bell, FileText, MoreHorizontal } from 'lucide-react';
+import { Home, MessageSquare, Bell, FileText, Bookmark, MoreHorizontal } from 'lucide-react';
 import { useUser } from "@clerk/clerk-react";
 import { useChatContext } from 'stream-chat-react';
 import { useState, useEffect } from 'react';
@@ -14,6 +14,7 @@ const MainSidebar = ({ activeView = 'home', onViewChange }) => {
     { icon: MessageSquare, label: 'DMs', id: 'dms', badge: unreadDMCount },
     { icon: Bell, label: 'Activity', id: 'activity' },
     { icon: FileText, label: 'Files', id: 'files' },
+    { icon: Bookmark, label: 'Later', id: 'later' },
     { icon: MoreHorizontal, label: 'More', id: 'more' },
   ];
 
