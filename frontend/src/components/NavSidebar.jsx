@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, Edit, Headphones, Book, Hash, Users, MoreVertical } from 'lucide-react';
+import { ChevronDown, ChevronRight, Edit, Headphones, Settings, Star, Hash, Users, MoreVertical, Plus } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { ChannelList } from 'stream-chat-react';
 import CustomChannelPreview from './CustomChannelPreview';
@@ -76,44 +76,57 @@ const NavSidebar = ({
     <div className="nav-sidebar">
       {/* Workspace Header */}
       <div className="nav-sidebar__header">
-        <button className="workspace-selector">
-          <span className="workspace-name">{workspaceName}</span>
-          <ChevronDown className="workspace-icon" />
-        </button>
-        <button
-          className="new-message-btn"
-          aria-label="New message"
-          title="New message"
-        >
-          <Edit className="edit-icon" />
-        </button>
+        <div className="workspace-header-title">
+          <button className="workspace-selector">
+            <span className="workspace-name">{workspaceName}</span>
+            <ChevronDown className="workspace-icon" />
+          </button>
+        </div>
+        <div className="workspace-header-controls">
+          <button
+            className="header-control-btn"
+            aria-label="Manage my sidebar"
+            title="Manage my sidebar"
+          >
+            <Settings className="control-icon" />
+          </button>
+          <button
+            className="header-control-btn"
+            aria-label="New message"
+            title="New message"
+          >
+            <Edit className="control-icon" />
+          </button>
+        </div>
       </div>
 
       {/* Navigation Content */}
       <div className="nav-sidebar__content">
         {/* Quick Actions */}
-        <div className="nav-section">
+        <div className="nav-section nav-section-quick">
           <button className="nav-item">
             <Headphones className="nav-item-icon" />
             <span>Huddles</span>
           </button>
           <button className="nav-item">
-            <Book className="nav-item-icon" />
+            <Users className="nav-item-icon" />
             <span>Directories</span>
           </button>
         </div>
 
+        {/* Divider */}
+        <div className="nav-divider"></div>
+
         {/* Starred Section */}
         <div className="nav-section">
           <button
-            className="section-header"
+            className="section-header section-header-with-icon"
             onClick={handleToggleStarred}
           >
-            {showStarred ? (
-              <ChevronDown className="section-header-icon" />
-            ) : (
-              <ChevronRight className="section-header-icon" />
-            )}
+            <div className="section-header-leading">
+              <Star className="section-header-emoji" fill="currentColor" />
+              <ChevronRight className={`section-header-chevron ${showStarred ? 'expanded' : ''}`} />
+            </div>
             <span className="section-header-text">Starred</span>
           </button>
           {showStarred && (
@@ -132,26 +145,24 @@ const NavSidebar = ({
               className="section-header"
               onClick={handleToggleChannels}
             >
-              {showChannels ? (
-                <ChevronDown className="section-header-icon" />
-              ) : (
-                <ChevronRight className="section-header-icon" />
-              )}
+              <ChevronRight className={`section-header-chevron ${showChannels ? 'expanded' : ''}`} />
               <span className="section-header-text">Channels</span>
             </button>
-            
-            <button 
-              className="section-header-options"
-              onClick={handleToggleChannelOptions}
-              aria-label="Channel options"
-              title="Channel options"
-              ref={channelOptionsButtonRef}
-            >
-              <MoreVertical className="section-header-options-icon" />
-            </button>
+
+            <div className="section-header-actions">
+              <button
+                className="section-header-action-btn"
+                onClick={handleToggleChannelOptions}
+                aria-label="Channel options"
+                title="Channel options"
+                ref={channelOptionsButtonRef}
+              >
+                <MoreVertical className="section-action-icon" />
+              </button>
+            </div>
 
             {showChannelOptions && (
-              <ChannelOptionsMenu 
+              <ChannelOptionsMenu
                 onCreateChannel={handleCreateChannel}
                 onClose={handleCloseChannelOptions}
                 buttonRef={channelOptionsButtonRef}
@@ -192,17 +203,34 @@ const NavSidebar = ({
 
         {/* Direct Messages Section */}
         <div className="nav-section">
-          <button
-            className="section-header"
-            onClick={handleToggleDMs}
-          >
-            {showDMs ? (
-              <ChevronDown className="section-header-icon" />
-            ) : (
-              <ChevronRight className="section-header-icon" />
-            )}
-            <span className="section-header-text">Direct messages</span>
-          </button>
+          <div className="section-header-wrapper">
+            <button
+              className="section-header"
+              onClick={handleToggleDMs}
+            >
+              <ChevronRight className={`section-header-chevron ${showDMs ? 'expanded' : ''}`} />
+              <span className="section-header-text">Direct messages</span>
+            </button>
+
+            <div className="section-header-actions">
+              <button
+                className="section-header-action-btn"
+                onClick={() => alert('Open new message modal')}
+                aria-label="New direct message"
+                title="New direct message"
+              >
+                <Plus className="section-action-icon" />
+              </button>
+              <button
+                className="section-header-action-btn"
+                aria-label="Direct messages options"
+                title="Direct messages options"
+              >
+                <MoreVertical className="section-action-icon" />
+              </button>
+            </div>
+          </div>
+
           {showDMs && (
             <div className="section-content">
               <UsersList activeChannel={activeChannel} />
