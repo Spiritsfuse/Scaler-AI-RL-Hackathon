@@ -11,6 +11,7 @@ import {
   MessageList,
   Thread,
   Window,
+  MessageSimple,
 } from "stream-chat-react";
 
 import "../styles/stream-chat-theme.css";
@@ -22,6 +23,7 @@ import CustomChannelHeader from "../components/CustomChannelHeader";
 import SlackLayout from "../components/SlackLayout";
 import SlackMessageInput from "../components/SlackMessageInput";
 import CanvasView from "../components/CanvasView";
+import CustomPollMessage from "../components/CustomPollMessage";
 
 const HomePage = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -35,6 +37,16 @@ const HomePage = () => {
   const [canvasTitle, setCanvasTitle] = useState(""); // Track canvas title
 
   const { chatClient, error, isLoading } = useStreamChat();
+
+  // Custom message text renderer for polls
+  const MessageText = (props) => {
+    // Check if this is a poll message
+    if (props.message?.customType === 'poll') {
+      return <CustomPollMessage message={props.message} />;
+    }
+    // Return null to let Stream render default text
+    return null;
+  };
 
   // Reset canvas title when switching away from Canvas tab
   const handleTabChange = (newTab) => {
@@ -140,7 +152,7 @@ const HomePage = () => {
             />
             {activeTab === "Messages" ? (
               <>
-                <MessageList />
+                <MessageList MessageText={MessageText} />
                 <SlackMessageInput />
               </>
             ) : (
