@@ -1,23 +1,61 @@
+the component is a self-contained input box, likely positioned at the bottom of the chat window.
 
+1. Overall Container
+Layout: A flex flex-col container.
 
-### 1. Active Tab ("Messages")
+Styling: It has a light border (e.g., border border-gray-300) and rounded corners (e.g., rounded-lg). It has a bg-white background.
 
-* **Layout:** A `flex items-center gap-2` component.
-* **Icon:** `MessageSquare` (from Lucide React), `text-black`.
-* **Text:** "Messages", styled as `text-black font-semibold`.
-* **Active Indicator:** A thick, purple bottom border (e.g., `border-b-2 border-purple-600`). This border is positioned with padding (e.g., `pb-2`) to align perfectly under the tab.
+2. Top Toolbar
+This is the first child of the main container.
 
-### 2. Inactive Tab ("Add canvas")
+Layout: A flex flex-row items-center gap-4 (or similar spacing).
 
-This is the new option you want to add.
+Styling: It has padding (e.g., p-2) and a thin bottom border separating it from the text area (e.g., border-b border-gray-200).
 
-* **Layout:** A `flex items-center gap-2` component.
-* **Icon:** `FileText` (or `File`) from Lucide React.
-* **Text:** "Add canvas".
-* **Style:** It is styled as inactive. The icon and text are grayed out (e.g., `text-gray-500`) and the font is not bold (`font-medium` or `font-normal`). It does **not** have the purple bottom border.
+Icons (from Lucide React): The icons are grouped logically.
 
-### 3. Add Button
+Group 1: Bold, Italic, Underline, Strikethrough
 
-* **Layout:** An icon-only button.
-* **Icon:** `Plus` (from Lucide React).
-* **Style:** It is also styled as inactive (e.g., `text-gray-500`).
+Group 2: Link
+
+Group 3: ListOrdered, List
+
+Group 4: Code, Quote
+
+3. Text Input Area
+This is the middle section.
+
+Element: A textarea component.
+
+Styling: It is styled to be borderless (e.g., border-none focus:ring-0) and takes up the available vertical space (flex-1).
+
+Placeholder: The text "Message #random" is shown as a placeholder.
+
+4. Bottom Actions Bar
+This is the final child of the main container, sitting below the text area.
+
+Layout: A flex flex-row items-center justify-between.
+
+Styling: It has padding (e.g., p-2).
+
+Left-Side Icons: A flex flex-row items-center gap-3.
+
+PlusCircle (or Plus in a circle)
+
+CaseSensitive (for "Aa")
+
+Smile
+
+AtSign
+
+Video
+
+Mic
+
+Paperclip (or a similar "attach" icon, though the image is a bit ambiguous, Paperclip is a safe bet).
+
+Right-Side Icons: A flex flex-row items-center gap-2.
+
+Send Button: A Send icon. It appears to be the primary action button.
+
+Dropdown: A ChevronDown icon, likely for send options (e.g., schedule message).

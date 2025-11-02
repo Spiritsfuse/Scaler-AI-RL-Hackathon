@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import { useUser } from '@clerk/clerk-react';
 import {
   Bold,
   Italic,
@@ -15,9 +16,13 @@ import {
   AtSign,
   Video,
   Mic,
-  Command,
+  Paperclip,
   Send,
-  ChevronDown
+  ChevronDown,
+  FileText,
+  BarChart3,
+  Upload,
+  X
 } from 'lucide-react';
 import { useChannelStateContext, useChannelActionContext } from 'stream-chat-react';
 import '../styles/slack-message-input.css';
@@ -27,12 +32,45 @@ const SlackMessageInput = () => {
   const [isFormattingVisible, setIsFormattingVisible] = useState(true);
   const [activeFormats, setActiveFormats] = useState(new Set());
   const [isFocused, setIsFocused] = useState(false);
+  const [showPlusMenu, setShowPlusMenu] = useState(false);
+  const [showPollModal, setShowPollModal] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const textareaRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const plusButtonRef = useRef(null);
   const navigate = useNavigate();
 
-  // Get channel from context
+  // Get channel and user from context
   const { channel } = useChannelStateContext();
   const { sendMessage } = useChannelActionContext();
+  const { user } = useUser();
+
+  // Generate dynamic placeholder text
+  const getPlaceholderText = () => {
+    try {
+      if (!channel) return 'Message';
+
+      // Check if it's a DM
+      const isDM = channel.data?.member_count === 2 && channel.data?.id.includes('user_');
+
+      if (isDM) {
+        // For DMs, show the other user's name
+        const members = channel.state?.members ? Object.values(channel.state.members) : [];
+        const otherUser = members.find(member => member.user.id !== user?.id);
+        if (otherUser) {
+          return `Message @${otherUser.user.name || otherUser.user.id}`;
+        }
+        return 'Message';
+      } else {
+        // For channels, show channel name with #
+        const channelName = channel.data?.id || 'general';
+        return `Message #${channelName}`;
+      }
+    } catch (error) {
+      console.error('Error generating placeholder:', error);
+      return 'Message';
+    }
+  };
 
   // Auto-resize textarea
   useEffect(() => {
@@ -41,6 +79,7 @@ const SlackMessageInput = () => {
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [messageText]);
+
 
   const handleSendMessage = async () => {
     try {
@@ -99,6 +138,118 @@ const SlackMessageInput = () => {
       }
     } catch (error) {
       console.error('Error starting video call:', error);
+    }
+  };
+
+  // Close plus menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        plusButtonRef.current &&
+        !plusButtonRef.current.contains(event.target) &&
+        showPlusMenu
+      ) {
+        setShowPlusMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showPlusMenu]);
+
+  const handlePlusClick = () => {
+    try {
+      setShowPlusMenu(!showPlusMenu);
+    } catch (error) {
+      console.error('Error toggling plus menu:', error);
+    }
+  };
+
+  const handleFileSelect = () => {
+    try {
+      setShowPlusMenu(false);
+      fileInputRef.current?.click();
+    } catch (error) {
+      console.error('Error opening file selector:', error);
+    }
+  };
+
+  const handleFileUpload = async (event) => {
+    try {
+      const file = event.target.files?.[0];
+      if (!file || !channel) return;
+
+      setIsUploading(true);
+
+      // Check if it's an image or other file
+      const isImage = file.type.startsWith('image/');
+
+      // Upload file to Stream CDN and send as message with attachment
+      if (isImage) {
+        // Upload image using Stream Chat API
+        const response = await channel.sendImage(file, null, {
+          text: `${user?.fullName || user?.firstName || 'User'} uploaded an image`,
+        });
+        console.log('Image uploaded successfully:', response);
+      } else {
+        // Upload file using Stream Chat API
+        const response = await channel.sendFile(file, null, {
+          text: `${user?.fullName || user?.firstName || 'User'} uploaded ${file.name}`,
+        });
+        console.log('File uploaded successfully:', response);
+      }
+
+      // Reset file input
+      event.target.value = '';
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert(`Failed to upload file: ${error.message || 'Please try again.'}`);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handlePollClick = () => {
+    try {
+      setShowPlusMenu(false);
+      setShowPollModal(true);
+    } catch (error) {
+      console.error('Error opening poll modal:', error);
+    }
+  };
+
+  const handleCreatePoll = async (pollData) => {
+    try {
+      if (!channel || !user) return;
+
+      // Create poll data structure with Stream's custom message data
+      const pollId = `poll_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      const pollMessage = {
+        text: `📊 ${pollData.question}`,
+        type: 'regular',
+        customType: 'poll',
+        poll_id: pollId,
+        poll_question: pollData.question,
+        poll_options: pollData.options.map((option, index) => ({
+          id: index,
+          text: option,
+          votes: [],
+        })),
+        poll_created_by: user.id,
+        poll_created_at: new Date().toISOString(),
+      };
+
+      // Send poll message using Stream Chat API
+      const response = await channel.sendMessage(pollMessage);
+      console.log('Poll created successfully:', response);
+
+      setShowPollModal(false);
+    } catch (error) {
+      console.error('Error creating poll:', error);
+      alert(`Failed to create poll: ${error.message || 'Please try again.'}`);
     }
   };
 
@@ -178,6 +329,109 @@ const SlackMessageInput = () => {
     </svg>
   );
 
+  const PollModal = ({ onClose, onSubmit }) => {
+    const [question, setQuestion] = useState('');
+    const [options, setOptions] = useState(['', '']);
+
+    const addOption = () => {
+      if (options.length < 10) {
+        setOptions([...options, '']);
+      }
+    };
+
+    const updateOption = (index, value) => {
+      const newOptions = [...options];
+      newOptions[index] = value;
+      setOptions(newOptions);
+    };
+
+    const removeOption = (index) => {
+      if (options.length > 2) {
+        setOptions(options.filter((_, i) => i !== index));
+      }
+    };
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      const validOptions = options.filter(opt => opt.trim());
+      if (question.trim() && validOptions.length >= 2) {
+        onSubmit({ question: question.trim(), options: validOptions });
+      }
+    };
+
+    return (
+      <div className="poll-modal-overlay" onClick={onClose}>
+        <div className="poll-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="poll-modal__header">
+            <h2>Create a poll</h2>
+            <button className="poll-modal__close" onClick={onClose} aria-label="Close">
+              <X size={20} />
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="poll-modal__form">
+            <div className="poll-modal__field">
+              <label htmlFor="poll-question">Question</label>
+              <input
+                id="poll-question"
+                type="text"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder="What would you like to ask?"
+                required
+                autoFocus
+              />
+            </div>
+
+            <div className="poll-modal__field">
+              <label>Options</label>
+              {options.map((option, index) => (
+                <div key={index} className="poll-option-input">
+                  <input
+                    type="text"
+                    value={option}
+                    onChange={(e) => updateOption(index, e.target.value)}
+                    placeholder={`Option ${index + 1}`}
+                    required
+                  />
+                  {options.length > 2 && (
+                    <button
+                      type="button"
+                      className="poll-option-remove"
+                      onClick={() => removeOption(index)}
+                      aria-label="Remove option"
+                    >
+                      <X size={16} />
+                    </button>
+                  )}
+                </div>
+              ))}
+              {options.length < 10 && (
+                <button type="button" className="poll-add-option" onClick={addOption}>
+                  <Plus size={16} />
+                  Add option
+                </button>
+              )}
+            </div>
+
+            <div className="poll-modal__footer">
+              <button type="button" className="poll-modal__button poll-modal__button--cancel" onClick={onClose}>
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="poll-modal__button poll-modal__button--submit"
+                disabled={!question.trim() || options.filter(opt => opt.trim()).length < 2}
+              >
+                Create poll
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="slack-message-input" data-qa="message_input_container">
       <div className="slack-message-input__inner">
@@ -230,8 +484,8 @@ const SlackMessageInput = () => {
               onKeyDown={handleKeyDown}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
-              placeholder="Jot something down"
-              aria-label="Message input"
+              placeholder={getPlaceholderText()}
+              aria-label={getPlaceholderText()}
               rows={1}
             />
           </div>
@@ -244,8 +498,52 @@ const SlackMessageInput = () => {
             aria-orientation="horizontal"
           >
             {/* Left-aligned actions */}
-            <div className="slack-action-toolbar__prefix">
-              <ActionButton icon={Plus} label="Attach" dataQa="shortcuts_menu_trigger" />
+            <div className="slack-action-toolbar__prefix" ref={plusButtonRef}>
+              <button
+                className="slack-action-button"
+                onClick={handlePlusClick}
+                aria-label="Attach"
+                data-qa="shortcuts_menu_trigger"
+                type="button"
+              >
+                <Plus size={18} strokeWidth={1.5} />
+              </button>
+
+              {/* Plus Menu Dropdown */}
+              {showPlusMenu && (
+                <div className="plus-menu-dropdown" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    className="plus-menu-item"
+                    onClick={handleFileSelect}
+                    disabled={isUploading}
+                  >
+                    <Upload size={20} />
+                    <div className="plus-menu-item__content">
+                      <span className="plus-menu-item__title">Upload a file</span>
+                      <span className="plus-menu-item__subtitle">
+                        {isUploading ? 'Uploading...' : 'Share images, documents, and more'}
+                      </span>
+                    </div>
+                  </button>
+                  <button className="plus-menu-item" onClick={handlePollClick}>
+                    <BarChart3 size={20} />
+                    <div className="plus-menu-item__content">
+                      <span className="plus-menu-item__title">Create a poll</span>
+                      <span className="plus-menu-item__subtitle">Get feedback from your team</span>
+                    </div>
+                  </button>
+                </div>
+              )}
+
+              {/* Hidden File Input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden-file-input"
+                onChange={handleFileUpload}
+                accept="*/*"
+                aria-hidden="true"
+              />
             </div>
 
             {/* Center actions */}
@@ -267,6 +565,7 @@ const SlackMessageInput = () => {
 
               <ActionButton icon={Video} label="Start video call" dataQa="video_composer_button" onClick={handleVideoCall} />
               <ActionButton icon={Mic} label="Record audio clip" dataQa="audio_composer_button" />
+              <ActionButton icon={Paperclip} label="Attach file" dataQa="paperclip_button" />
 
               <span className="slack-action-toolbar__divider"></span>
 
@@ -309,6 +608,11 @@ const SlackMessageInput = () => {
           </div>
         </div>
       </div>
+
+      {/* Poll Modal */}
+      {showPollModal && (
+        <PollModal onClose={() => setShowPollModal(false)} onSubmit={handleCreatePoll} />
+      )}
     </div>
   );
 };
