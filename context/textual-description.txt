@@ -1,51 +1,125 @@
-🎨 Visual Description of the Activity Component
-The component is a modal or sidebar section titled "Activity" and is designed to display notifications.
+⬅️ Left Sidebar Navigation (Detailed View)
+Context: This describes the fixed-width, dark purple left column of the application, focusing on the content below the global navigation icons.
 
-🖼️ Overall Structure and Layout
-The component occupies a portion of the screen (likely a sidebar or modal) and has a dark purple/eggplant background color. It has a clear header, a navigation area, and a list of activity items. The text is primarily white or a lighter shade for high contrast.
+1. 🖼️ Global Sidebar Structure
+Background: Solid Dark Purple (bg-purple-900).
 
-📥 Header Area
-The header is fixed at the top and contains the following elements:
+Width: Fixed and narrow.
 
-Title: The word "Activity" in a large, bold, white font on the left.
+Global Icons (Top):
 
-Toggle Switch: On the right, there is a toggle switch component.
+Logo/App Icon (Top-Left): White 'S' in a square/rounded icon on a purple background.
 
-It is labeled "Unreads" in a smaller white font immediately to its left.
+Global Navigation: A stacked column of icons (Home, DMs, Activity, Files, More) with white icons.
 
-The switch itself is horizontal with a white or light-colored circular handle. When active (as shown), the switch's background is a contrasting color (like purple, or a bright accent color) to the handle.
+Home: Home icon.
 
-🧭 Navigation/Filter Bar
-Immediately below the header is a navigation bar for filtering the activity list:
+DMs: MessageSquare icon, with a small purple badge containing the number 3.
 
-"All" Tab: This tab is currently active. It is displayed in a white or light-colored font, potentially with an underline or a thicker bottom border in the same light color to indicate selection.
+Activity: Bell icon.
 
-Other Tabs (Implied): There's an implied space for other filter tabs (e.g., "Mentions," "Threads") that would be displayed in a slightly less prominent color when inactive.
+Files: File icon.
 
-📢 Activity/Notification List
-The list starts below the navigation bar and contains individual activity items.
+More: MoreVertical (...) icon.
 
-🔔 Activity Item Structure (The "Slackbot" Example)
-The visible item is from an App and has a standard notification structure:
+Bottom Section:
 
-Icon Area (Left):
+Add Button: Circular button with a white + sign on a light purple background.
 
-Apps Label: A small text label, "Apps," appears above the icon in a less prominent, light grey font.
+User Avatar: Small circular avatar.
 
-App Icon: A circular or squarish area containing the application's logo (Slackbot in this case). The Slackbot icon is colorful, featuring a mix of orange, pink, cyan, and black on a white background. Use an image placeholder or the lucide-react Bot icon for a generic app icon.
+2. 📝 Workspace Header (Top of Scrollable Area)
+Workspace Name: **Spiritsfuse** in bold, white text.
 
-Content Area (Center):
+Dropdown Icon: A ChevronDown icon next to the workspace name, indicating a menu for changing workspaces or settings.
 
-Sender/Source: "Slackbot" in a bold white font.
+Action Icons (Right):
 
-Message: The notification text: "You're good to go! The channel #testing is now shared between your organization and New Workspace."
+Settings icon (Gear).
 
-The message uses a light white/off-white font.
+Pencil icon (Edit/Customize).
 
-Key entities like the channel name (#testing) and the workspace name (New Workspace) are bolded for emphasis.
+3. ⏳ Trial Status Banner
+Content: **29 days left in trial**
 
-Action/Overflow Area (Right):
+Layout: Full-width dark purple bar within the sidebar.
 
-Bookmark/Save Icon: A bookmark icon (like Bookmark from lucide-react) in a white or light color. It appears to be an action to save or flag the notification.
+Icon: An Hourglass or Timer icon on the left.
 
-Kebab/More Options Menu: A vertical ellipsis (three dots) icon (like MoreVertical from lucide-react) next to the bookmark, indicating a menu for more actions related to the notification.
+Action Indicator: A ChevronRight (>) icon on the right, indicating a clickable link.
+
+4. 🧭 Core Features & Directories
+This section uses standard white text links.
+
+Headphones icon: Huddles
+
+Users icon: Directories
+
+5. ⭐️ Starred Section
+Title: **Starred** in bold, light gray text.
+
+Placeholder: Drag and drop important stuff here in lighter gray text (suggesting an empty state with drag-and-drop functionality).
+
+6. 🔗 External Connections
+Toggle: ChevronDown icon indicating a collapsible section.
+
+Section Title: External Connections in light gray text.
+
+Channel List Item:
+
+Hash icon: testing
+
+Action Link:
+
+Plus icon: Add external people
+
+7. 💬 Channels
+Toggle: ChevronDown icon.
+
+Section Title: **Channels** in bold, light gray text.
+
+List Items:
+
+Active Channel: The channel #all-panchtatv is selected/active.
+
+Styling: Solid Black/Dark Gray background (bg-gray-900 or similar) and white text.
+
+Inactive Channels:
+
+Hash icon: new-channel
+
+Hash icon: social
+
+Action Link:
+
+Plus icon: Add channels
+
+8. ✉️ Direct Messages (DMs)
+Toggle: ChevronDown icon.
+
+Section Title: Direct messages in light gray text.
+
+List Items:
+
+User 1: Yash Wardhan Singh (Avatar/icon needed).
+
+A purple badge with the number 3 is right-aligned (unread count).
+
+User 2: Dhruv Sharma with a small, inline (you) indicator next to the name.
+
+Action Link:
+
+Plus icon: Invite people
+
+9. 📱 Apps
+Toggle: ChevronDown icon.
+
+Section Title: Apps in light gray text.
+
+List Items:
+
+App 1: Slackbot (Avatar/icon needed, e.g., a simple square with an app logo).
+
+Action Link:
+
+Plus icon: Add apps

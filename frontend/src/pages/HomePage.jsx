@@ -15,12 +15,18 @@ import {
 
 import "../styles/stream-chat-theme.css";
 import CreateChannelModal from "../components/CreateChannelModal";
+import NewMessageModal from "../components/NewMessageModal";
+import InvitePeopleModal from "../components/InvitePeopleModal";
+import ProfileEdit from "../components/ProfileEdit";
 import CustomChannelHeader from "../components/CustomChannelHeader";
 import SlackLayout from "../components/SlackLayout";
 import SlackMessageInput from "../components/SlackMessageInput";
 
 const HomePage = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isNewMessageModalOpen, setIsNewMessageModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
   const [activeChannel, setActiveChannel] = useState(null);
   const [activeView, setActiveView] = useState('home');
   const [searchParams, setSearchParams] = useSearchParams();
@@ -61,6 +67,47 @@ const HomePage = () => {
     // If switching to dms and we have a DM channel, maintain it
   };
 
+  // Handle create actions from plus menu
+  const handleCreateAction = (actionId) => {
+    switch (actionId) {
+      case 'message':
+        setIsNewMessageModalOpen(true);
+        break;
+      case 'channel':
+        setIsCreateModalOpen(true);
+        break;
+      case 'huddle':
+        alert('Huddle feature coming soon!');
+        break;
+      case 'canvas':
+        alert('Canvas feature coming soon!');
+        break;
+      case 'list':
+        alert('List feature coming soon!');
+        break;
+      case 'workflow':
+        alert('Workflow feature coming soon!');
+        break;
+      case 'invite':
+        setIsInviteModalOpen(true);
+        break;
+      default:
+        console.log('Unknown action:', actionId);
+    }
+  };
+
+  // Handle message created
+  const handleMessageCreated = (channel) => {
+    setActiveChannel(channel);
+    setSearchParams({ channel: channel.id });
+    setActiveView('dms');
+  };
+
+  // Handle open profile
+  const handleOpenProfile = () => {
+    setIsProfileEditOpen(true);
+  };
+
   return (
     <Chat client={chatClient}>
       <SlackLayout
@@ -70,6 +117,8 @@ const HomePage = () => {
         onCreateChannel={() => setIsCreateModalOpen(true)}
         activeView={activeView}
         onViewChange={handleViewChange}
+        onCreateAction={handleCreateAction}
+        onOpenProfile={handleOpenProfile}
       >
         <Channel channel={activeChannel}>
           <Window>
@@ -81,7 +130,29 @@ const HomePage = () => {
         </Channel>
       </SlackLayout>
 
-      {isCreateModalOpen && <CreateChannelModal onClose={() => setIsCreateModalOpen(false)} />}
+      {/* Modals */}
+      {isCreateModalOpen && (
+        <CreateChannelModal onClose={() => setIsCreateModalOpen(false)} />
+      )}
+      {isNewMessageModalOpen && (
+        <NewMessageModal
+          isOpen={isNewMessageModalOpen}
+          onClose={() => setIsNewMessageModalOpen(false)}
+          onMessageCreated={handleMessageCreated}
+        />
+      )}
+      {isInviteModalOpen && (
+        <InvitePeopleModal
+          isOpen={isInviteModalOpen}
+          onClose={() => setIsInviteModalOpen(false)}
+        />
+      )}
+
+      {/* Profile Edit */}
+      <ProfileEdit
+        isOpen={isProfileEditOpen}
+        onClose={() => setIsProfileEditOpen(false)}
+      />
     </Chat>
   );
 };

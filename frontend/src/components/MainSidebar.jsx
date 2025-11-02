@@ -1,13 +1,22 @@
-import { Home, MessageSquare, Bell, FileText, Bookmark, MoreHorizontal } from 'lucide-react';
+import { Home, MessageSquare, Bell, FileText, Bookmark, MoreHorizontal, Plus } from 'lucide-react';
 import { useUser } from "@clerk/clerk-react";
 import { useChatContext } from 'stream-chat-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import CreateMenuModal from './CreateMenuModal';
+import ProfileMenu from './ProfileMenu';
+import MoreMenuModal from './MoreMenuModal';
 import '../styles/main-sidebar.css';
 
-const MainSidebar = ({ activeView = 'home', onViewChange }) => {
+const MainSidebar = ({ activeView = 'home', onViewChange, onCreateAction, onOpenProfile }) => {
   const { user } = useUser();
   const { client } = useChatContext();
   const [unreadDMCount, setUnreadDMCount] = useState(0);
+  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  const plusButtonRef = useRef(null);
+  const userAvatarRef = useRef(null);
+  const moreButtonRef = useRef(null);
 
   const navItems = [
     { icon: Home, label: 'Home', id: 'home' },
@@ -72,6 +81,33 @@ const MainSidebar = ({ activeView = 'home', onViewChange }) => {
     return 'U';
   };
 
+  // Handle plus button click
+  const handlePlusClick = () => {
+    setIsCreateMenuOpen(!isCreateMenuOpen);
+  };
+
+  // Close menu handler
+  const handleCloseMenu = () => {
+    setIsCreateMenuOpen(false);
+  };
+
+  // Handle create action
+  const handleCreateAction = (actionId) => {
+    if (onCreateAction) {
+      onCreateAction(actionId);
+    }
+  };
+
+  // Handle profile menu toggle
+  const handleProfileClick = () => {
+    setIsProfileMenuOpen(!isProfileMenuOpen);
+  };
+
+  // Close profile menu
+  const handleCloseProfileMenu = () => {
+    setIsProfileMenuOpen(false);
+  };
+
   return (
     <div className="main-sidebar">
       {/* Workspace Logo */}
@@ -89,10 +125,17 @@ const MainSidebar = ({ activeView = 'home', onViewChange }) => {
           return (
             <button
               key={item.id}
+              ref={item.id === 'more' ? moreButtonRef : null}
               className={`main-sidebar__nav-item ${isActive ? 'active' : ''}`}
               aria-label={item.label}
               title={item.label}
-              onClick={() => onViewChange?.(item.id)}
+              onClick={() => {
+                if (item.id === 'more') {
+                  setIsMoreMenuOpen(!isMoreMenuOpen);
+                } else {
+                  onViewChange?.(item.id);
+                }
+              }}
             >
               <div className="nav-item-icon-wrapper">
                 <Icon className="nav-item-icon" />
@@ -106,16 +149,59 @@ const MainSidebar = ({ activeView = 'home', onViewChange }) => {
         })}
       </nav>
 
+      {/* Plus Button */}
+      <div className="main-sidebar__plus">
+        <button
+          ref={plusButtonRef}
+          className={`plus-button ${isCreateMenuOpen ? 'rotated' : ''}`}
+          onClick={handlePlusClick}
+          aria-label="Add"
+          title="Add"
+          aria-expanded={isCreateMenuOpen}
+        >
+          <Plus className="plus-icon" />
+        </button>
+      </div>
+
       {/* User Avatar */}
       <div className="main-sidebar__user">
-        <div className="user-avatar">
+        <button
+          ref={userAvatarRef}
+          className="user-avatar"
+          onClick={handleProfileClick}
+          aria-label="Open profile menu"
+          title="Profile"
+        >
           {user?.imageUrl ? (
             <img src={user.imageUrl} alt="User avatar" />
           ) : (
             <span>{getUserInitial()}</span>
           )}
-        </div>
+        </button>
       </div>
+
+      {/* Create Menu Modal */}
+      <CreateMenuModal
+        isOpen={isCreateMenuOpen}
+        onClose={handleCloseMenu}
+        buttonRef={plusButtonRef}
+        onActionSelect={handleCreateAction}
+      />
+
+      {/* Profile Menu */}
+      <ProfileMenu
+        isOpen={isProfileMenuOpen}
+        onClose={handleCloseProfileMenu}
+        anchorRef={userAvatarRef}
+        onOpenProfile={onOpenProfile}
+      />
+
+      {/* More Menu Modal */}
+      <MoreMenuModal
+        isOpen={isMoreMenuOpen}
+        onClose={() => setIsMoreMenuOpen(false)}
+        buttonRef={moreButtonRef}
+      />
     </div>
   );
 };

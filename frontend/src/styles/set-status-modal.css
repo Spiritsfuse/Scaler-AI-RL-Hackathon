@@ -1,0 +1,249 @@
+/* Set Status Modal */
+.set-status-modal {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 550px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.2s ease-out;
+  overflow: hidden;
+}
+
+/* Header */
+.set-status-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.set-status-modal__header .modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* Content */
+.set-status-modal__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.set-status-modal__content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.set-status-modal__content::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 4px;
+}
+
+/* Status Input */
+.status-input-section {
+  width: 100%;
+}
+
+.status-input-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  transition: border-color 0.15s;
+}
+
+.status-input-container:focus-within {
+  border-color: #1264a3;
+  box-shadow: 0 0 0 3px rgba(18, 100, 163, 0.1);
+}
+
+.emoji-picker-btn {
+  padding: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.emoji-picker-btn:hover {
+  background-color: #f3f4f6;
+}
+
+.emoji-display {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.status-text-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  color: #1f2937;
+  background: transparent;
+}
+
+.status-text-input::placeholder {
+  color: #9ca3af;
+}
+
+/* Presets Section */
+.status-presets-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preset-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-presets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.status-preset-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+
+.status-preset-item:hover {
+  background-color: #f3f4f6;
+}
+
+.status-preset-item.active {
+  background-color: #1264a3;
+}
+
+.status-preset-item.active .preset-text,
+.status-preset-item.active .preset-duration {
+  color: #fff;
+}
+
+.preset-emoji {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.preset-text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  transition: color 0.15s;
+}
+
+.preset-duration {
+  font-size: 13px;
+  color: #6b7280;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+/* Calendar item */
+.calendar-item {
+  background-color: #f9fafb;
+}
+
+.calendar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-icon img {
+  display: block;
+}
+
+/* Footer */
+.set-status-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+  flex-shrink: 0;
+  gap: 16px;
+}
+
+.edit-suggestions-link {
+  font-size: 14px;
+  color: #1264a3;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.edit-suggestions-link:hover {
+  color: #0b5a94;
+  text-decoration: underline;
+}
+
+.footer-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .set-status-modal {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .set-status-modal__header,
+  .set-status-modal__content,
+  .set-status-modal__footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .set-status-modal__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .footer-actions {
+    width: 100%;
+  }
+
+  .footer-actions button {
+    flex: 1;
+  }
+
+  .edit-suggestions-link {
+    text-align: center;
+  }
+}

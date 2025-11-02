@@ -14,12 +14,19 @@ const SlackLayout = ({
   onCreateChannel,
   activeView,
   onViewChange,
+  onCreateAction,
+  onOpenProfile,
   children
 }) => {
   return (
     <div className="slack-layout">
       {/* Far Left Sidebar */}
-      <MainSidebar activeView={activeView} onViewChange={onViewChange} />
+      <MainSidebar
+        activeView={activeView}
+        onViewChange={onViewChange}
+        onCreateAction={onCreateAction}
+        onOpenProfile={onOpenProfile}
+      />
 
       {/* Main Area (everything except far left sidebar) */}
       <div className="slack-layout__main">

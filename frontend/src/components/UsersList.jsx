@@ -2,9 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useSearchParams } from "react-router";
 import { useChatContext } from "stream-chat-react";
-
 import * as Sentry from "@sentry/react";
-import { CircleIcon } from "lucide-react";
+import '../styles/users-list.css';
 
 const UsersList = ({ activeChannel }) => {
   const { client } = useChatContext();
@@ -62,12 +61,12 @@ const UsersList = ({ activeChannel }) => {
     }
   };
 
-  if (isLoading) return <div className="team-channel-list__message">Loading users...</div>;
-  if (isError) return <div className="team-channel-list__message">Failed to load users</div>;
-  if (!users.length) return <div className="team-channel-list__message">No other users found</div>;
+  if (isLoading) return <div className="dm-list-message">Loading users...</div>;
+  if (isError) return <div className="dm-list-message">Failed to load users</div>;
+  if (!users.length) return <div className="dm-list-message">No other users found</div>;
 
   return (
-    <div className="team-channel-list__users">
+    <div className="dm-list">
       {users.map((user) => {
         const channelId = [client.user.id, user.id].sort().join("-").slice(0, 64);
         const channel = client.channel("messaging", channelId, {
@@ -76,44 +75,41 @@ const UsersList = ({ activeChannel }) => {
         const unreadCount = channel.countUnread();
         const isActive = activeChannel && activeChannel.id === channelId;
 
+        // Get user initials
+        const getUserInitial = () => {
+          const name = user.name || user.id;
+          return name.charAt(0).toUpperCase();
+        };
+
         return (
           <button
             key={user.id}
             onClick={() => startDirectMessage(user)}
-            className={`str-chat__channel-preview-messenger  ${
-              isActive && "bg-black/20! !hover:bg-black/20 border-l-8 border-purple-500 shadow-lg0"
-            }`}
+            className={`dm-item ${isActive ? 'dm-item--active' : ''}`}
           >
-            <div className="flex items-center gap-2 w-full">
-              <div className="relative">
+            <div className="dm-item__content">
+              <div className="dm-item__avatar">
                 {user.image ? (
                   <img
                     src={user.image}
                     alt={user.name || user.id}
-                    className="w-4 h-4 rounded-full"
+                    className="dm-avatar-img"
                   />
                 ) : (
-                  <div className="w-4 h-4 rounded-full bg-gray-400 flex items-center justify-center">
-                    <span className="text-xs text-white">
-                      {(user.name || user.id).charAt(0).toUpperCase()}
-                    </span>
+                  <div className="dm-avatar-placeholder">
+                    <span className="dm-avatar-text">{getUserInitial()}</span>
                   </div>
                 )}
-
-                <CircleIcon
-                  className={`w-2 h-2 absolute -bottom-0.5 -right-0.5 ${
-                    user.online ? "text-green-500 fill-green-500" : "text-gray-400 fill-gray-400"
-                  }`}
-                />
+                <div className={`dm-status-indicator ${user.online ? 'dm-status-indicator--online' : 'dm-status-indicator--offline'}`}></div>
               </div>
 
-              <span className="str-chat__channel-preview-messenger-name truncate">
+              <span className="dm-item__name">
                 {user.name || user.id}
               </span>
 
               {unreadCount > 0 && (
-                <span className="flex items-center justify-center ml-2 size-4 text-xs rounded-full bg-red-500 ">
-                  {unreadCount}
+                <span className="dm-item__badge">
+                  {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
             </div>

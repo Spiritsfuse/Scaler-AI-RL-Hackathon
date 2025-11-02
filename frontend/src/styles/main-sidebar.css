@@ -115,6 +115,47 @@
   line-height: 1;
 }
 
+/* Plus Button */
+.main-sidebar__plus {
+  padding: 8px 0;
+}
+
+.plus-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  padding: 0;
+}
+
+.plus-button:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+.plus-button:active {
+  transform: scale(0.95);
+}
+
+.plus-icon {
+  width: 20px;
+  height: 20px;
+  color: rgba(255, 255, 255, 0.9);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Rotation animation for X cross */
+.plus-button.rotated .plus-icon {
+  transform: rotate(45deg);
+}
+
 /* User Avatar */
 .main-sidebar__user {
   padding: 8px 0;
@@ -136,6 +177,8 @@
   font-size: 18px;
   transition: opacity 0.2s;
   position: relative;
+  border: none;
+  padding: 0;
 }
 
 .user-avatar:hover {
