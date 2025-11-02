@@ -24,6 +24,7 @@ import SlackLayout from "../components/SlackLayout";
 import SlackMessageInput from "../components/SlackMessageInput";
 import CanvasView from "../components/CanvasView";
 import CustomPollMessage from "../components/CustomPollMessage";
+import DMInfoPanel from "../components/DMInfoPanel";
 
 const HomePage = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -152,6 +153,7 @@ const HomePage = () => {
             />
             {activeTab === "Messages" ? (
               <>
+                <DMInfoPanel />
                 <MessageList MessageText={MessageText} />
                 <SlackMessageInput />
               </>

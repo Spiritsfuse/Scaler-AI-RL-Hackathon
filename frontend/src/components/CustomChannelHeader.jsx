@@ -18,6 +18,7 @@ import { useChannelStateContext } from "stream-chat-react";
 import { useState, useRef, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router";
+import { useChannelInfo } from "../hooks/useChannelInfo";
 import MembersModal from "./MembersModal";
 import PinnedMessagesModal from "./PinnedMessagesModal";
 import InviteModal from "./InviteModal";
@@ -63,9 +64,11 @@ const MemberAvatars = ({ members, count, onClick }) => {
  * The new CustomChannelHeader component with a two-row layout
  */
 const CustomChannelHeader = ({ activeTab, setActiveTab, canvasTitle }) => {
-  const { channel } = useChannelStateContext();
   const { user } = useUser();
   const navigate = useNavigate();
+
+  // Use the centralized channel info hook
+  const { isDM, otherUser, allMembers, memberCount, channel } = useChannelInfo();
 
   // --- Existing State ---
   const [showInvite, setShowInvite] = useState(false);
@@ -98,27 +101,6 @@ const CustomChannelHeader = ({ activeTab, setActiveTab, canvasTitle }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showAddMenu]);
-
-  // --- Existing Logic ---
-  // Added try/catch for robustness, though data access is usually safe.
-  let memberCount = 0;
-  let allMembers = [];
-  let otherUser = null;
-  let isDM = false;
-
-  try {
-    memberCount = channel.state.members ? Object.keys(channel.state.members).length : 0;
-    allMembers = channel.state.members ? Object.values(channel.state.members) : [];
-
-    otherUser = allMembers.find(
-      (member) => member.user.id !== user.id
-    );
-
-    isDM = channel.data?.member_count === 2 && channel.data?.id.includes("user_");
-  } catch (error) {
-    console.error("Error processing channel state:", error);
-  }
-  // --- End Existing Logic ---
 
   // --- Event Handlers (with try/catch as requested) ---
 
