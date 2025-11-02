@@ -26,6 +26,10 @@ import {
 } from 'lucide-react';
 import { useChannelStateContext, useChannelActionContext } from 'stream-chat-react';
 import '../styles/slack-message-input.css';
+import VideoRecorder from './VideoRecorder'; // Assuming it's in the same /components folder
+import AudioRecorder from './AudioRecorder'; // Assuming it's in the same /components folder
+import '../styles/VideoRecorder.css'; // Add path to your CSS
+import '../styles/AudioRecorder.css'; // Add path to your CSS
 
 // Debounce utility function
 const debounce = (func, wait) => {
@@ -545,17 +549,17 @@ const SlackMessageInput = () => {
     }
   };
 
-  const handleVideoCall = () => {
-    try {
-      if (channel) {
-        // Create a call ID based on channel ID
-        const callId = `call-${channel.id}-${Date.now()}`;
-        navigate(`/call/${callId}`);
-      }
-    } catch (error) {
-      console.error('Error starting video call:', error);
-    }
-  };
+  // const handleVideoCall = () => {
+  //   try {
+  //     if (channel) {
+  //       // Create a call ID based on channel ID
+  //       const callId = `call-${channel.id}-${Date.now()}`;
+  //       navigate(`/call/${callId}`);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error starting video call:', error);
+  //   }
+  // };
 
   // Close plus menu when clicking outside
   useEffect(() => {
@@ -878,7 +882,9 @@ const SlackMessageInput = () => {
       </div>
     );
   };
-
+// ADD THESE TWO LINES
+  const [isVideoRecorderOpen, setIsVideoRecorderOpen] = useState(false);
+  const [isAudioRecorderOpen, setIsAudioRecorderOpen] = useState(false);
   return (
     <div className="slack-message-input" data-qa="message_input_container">
       <div className="slack-message-input__inner">
@@ -1021,8 +1027,8 @@ const SlackMessageInput = () => {
 
               <span className="slack-action-toolbar__divider"></span>
 
-              <ActionButton icon={Video} label="Start video call" dataQa="video_composer_button" onClick={handleVideoCall} />
-              <ActionButton icon={Mic} label="Record audio clip" dataQa="audio_composer_button" />
+              <ActionButton icon={Video} label="Start video call" dataQa="video_composer_button" onClick={() => setIsVideoRecorderOpen(true)} />
+              <ActionButton icon={Mic} label="Record audio clip" dataQa="audio_composer_button" onClick={() => setIsAudioRecorderOpen(true)}/>
               <ActionButton icon={Paperclip} label="Attach file" dataQa="paperclip_button" />
 
               <span className="slack-action-toolbar__divider"></span>
@@ -1071,6 +1077,15 @@ const SlackMessageInput = () => {
       {showPollModal && (
         <PollModal onClose={() => setShowPollModal(false)} onSubmit={handleCreatePoll} />
       )}
+      {/* ADD THESE TWO COMPONENTS */}
+      <VideoRecorder 
+        isOpen={isVideoRecorderOpen} 
+        onClose={() => setIsVideoRecorderOpen(false)} 
+      />
+      <AudioRecorder 
+        isOpen={isAudioRecorderOpen} 
+        onClose={() => setIsAudioRecorderOpen(false)} 
+      />
     </div>
   );
 };
