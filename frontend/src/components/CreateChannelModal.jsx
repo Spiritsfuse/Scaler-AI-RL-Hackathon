@@ -58,11 +58,10 @@ const CreateChannelModal = ({ onClose }) => {
   //   setSelectedMembers([]);
   // }, []);
 
-  // auto-select all users for public channels
+  // Clear selected members when switching between channel types
   useEffect(() => {
-    if (channelType === "public") setSelectedMembers(users.map((u) => u.id));
-    else setSelectedMembers([]);
-  }, [channelType, users]);
+    setSelectedMembers([]);
+  }, [channelType]);
 
   const validateChannelName = (name) => {
     if (!name.trim()) return "Channel name is required";
@@ -106,22 +105,24 @@ const CreateChannelModal = ({ onClose }) => {
         .slice(0, 20);
 
       // prepare the channel data
-
       const channelData = {
         name: channelName.trim(),
         created_by_id: client.user.id,
-        members: [client.user.id, ...selectedMembers],
       };
 
-      if (description) channelData.description = description;
-
+      // For public channels, only add the creator
+      // For private channels, add creator + selected members
       if (channelType === "private") {
         channelData.private = true;
         channelData.visibility = "private";
+        channelData.members = [client.user.id, ...selectedMembers];
       } else {
         channelData.visibility = "public";
         channelData.discoverable = true;
+        channelData.members = [client.user.id]; // Only creator for public channels
       }
+
+      if (description) channelData.description = description;
 
       const channel = client.channel("messaging", channelId, channelData);
 
@@ -223,12 +224,23 @@ const CreateChannelModal = ({ onClose }) => {
                 </div>
               </label>
             </div>
+
+            {/* Info message for public channels */}
+            {channelType === "public" && (
+              <div className="form-hint" style={{ marginTop: '8px', color: '#6b7280' }}>
+                <HashIcon className="w-4 h-4" style={{ display: 'inline', marginRight: '4px' }} />
+                Public channels are discoverable and anyone in the workspace can join them.
+              </div>
+            )}
           </div>
 
           {/* add members component */}
           {channelType === "private" && (
             <div className="form-group">
-              <label>Add members</label>
+              <label>Add members (optional)</label>
+              <p className="form-hint" style={{ marginTop: '4px', marginBottom: '12px' }}>
+                You can add members now or invite them later
+              </p>
               <div className="member-selection-header">
                 <button
                   type="button"
@@ -239,7 +251,9 @@ const CreateChannelModal = ({ onClose }) => {
                   <UsersIcon className="w-4 h-4" />
                   Select Everyone
                 </button>
-                <span className="selected-count">{selectedMembers.length} selected</span>
+                <span className="selected-count">
+                  {selectedMembers.length} member{selectedMembers.length !== 1 ? 's' : ''} selected
+                </span>
               </div>
 
               <div className="members-list">
