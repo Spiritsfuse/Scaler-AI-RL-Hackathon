@@ -1,6 +1,3 @@
-Here is the documentation in Markdown format.
-
-```markdown
 # Project Documentation: MERN Slack Clone
 
 ## 1. Project Overview
@@ -91,4 +88,4 @@ The backend is a stateless API, and its data persistence layer is abstracted awa
 
 #### Conclusion
 This project is not just a visual clone; Its clean separation of concerns between the interactive frontend (Environment) and the stateless backend (World Server) makes it a perfect, high-fidelity sandbox for an AI agent to learn complex, multi-step tasks in a realistic and modern web application.
-```
+
