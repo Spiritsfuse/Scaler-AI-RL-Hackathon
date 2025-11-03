@@ -1,0 +1,91 @@
+version: "3.9"
+
+# ============================================================================
+# HACKATHON SUBMISSION - DOCKER COMPOSE CONFIGURATION
+# ============================================================================
+# NOTE: API keys are hardcoded for demo/testing purposes only.
+# These are TEST/DEVELOPMENT credentials with limited functionality.
+# For production use, migrate to docker secrets or environment files.
+# ============================================================================
+
+services:
+  # MongoDB Database
+  mongo:
+    image: mongo:6
+    container_name: slack-clone-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - slack-clone-network
+
+  # Backend API Server
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: slack-clone-backend
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      NODE_ENV: production
+      DOCKER_ENV: "true"
+      port: 5001
+      # MongoDB connection string (connects to mongo service)
+      dburl: mongodb://root:example@mongo:27017/slack-db?authSource=admin
+      # CORS origin - allow frontend to connect
+      origin: http://localhost:3000
+      # Clerk Authentication
+      CLERK_PUBLISHABLE_KEY: pk_test_d2VsbC1wb2xsaXdvZy00MC5jbGVyay5hY2NvdW50cy5kZXYk
+      CLERK_SECRET_KEY: sk_test_v80l80Me20WYE94dkKh09LRYXcukYLkpeawx5uFuw9
+      # Stream.io Configuration
+      STREAM_API_KEY: z4kbns7zhf6r
+      STREAM_API_SECRET: gu2qvxp34exk4qbcuykw4dgjkqfgryffrut6mhg4udqkq99g2hcdxxtbcyhpqrjx
+      # Sentry Configuration
+      SENTRY_DSN: https://4a77f1fa98c989c4f0cd8d7b7e165bdf@o4510244060594176.ingest.us.sentry.io/4510244068917248
+      # Inngest Configuration
+      INNGEST_SIGNING_KEY: signkey-prod-a1ef87d41755fe05e8a74880ee88a4d1f53c436570f0e2011c903983b30901f7
+      INNGEST_EVENT_KEY: GrQ1oMgblQE1Jqav7aMzzGzW1A6w7QcRFEctME4STnsI8H2DR95wf4jzPv9DNiD5CF1mgEMq7gkBthaWe0YAFg
+    depends_on:
+      - mongo
+    networks:
+      - slack-clone-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5001/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend React Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # Pass build-time environment variables for Vite
+        VITE_CLERK_PUBLISHABLE_KEY: pk_test_d2VsbC1wb2xsaXdvZy00MC5jbGVyay5hY2NvdW50cy5kZXYk
+        VITE_STREAM_API_KEY: z4kbns7zhf6r
+        VITE_SENTRY_DSN: https://240b471c653a7d55825a41c57b7d915e@o4510244060594176.ingest.us.sentry.io/4510245909954560
+        VITE_API_BASE_URL: http://localhost:5001/api
+    container_name: slack-clone-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - slack-clone-network
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  slack-clone-network:
+    driver: bridge

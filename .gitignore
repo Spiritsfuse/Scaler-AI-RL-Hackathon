@@ -1,0 +1,28 @@
+# Environment variables (kept for local development, not needed for Docker)
+.env
+.env.local
+.env.*.local
+
+# Sensitive documentation
+CONVERSATION_LOG.md
+DOCKER_README.md
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+docker-compose.override.yml
